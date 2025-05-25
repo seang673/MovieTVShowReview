@@ -13,7 +13,7 @@ body{
 
 }
 
-.mediaCard{
+.media-card{
     width:300px;
     margin:20px;
     padding:15px;
@@ -22,7 +22,7 @@ body{
 }
 
 .media-card img{
-    width: 100%;
+    width: 92%;
 }
 
 .modal{

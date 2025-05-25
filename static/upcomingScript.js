@@ -1,9 +1,11 @@
-const apiKey = "462908883a54600a4f35c65fdb0475cc";
-const movieUrl = `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=en-US&page=1`;
-const tvUrl = `https://api.themoviedb.org/3/tv/on_the_air?api_key=${apiKey}&language=en-US&page=1`;
 
+const apiKey = "462908883a54600a4f35c65fdb0475cc";
 async function fetchMedia(){
     try{
+
+        const movieUrl = `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=en-US&page=1`;
+        const tvUrl = `https://api.themoviedb.org/3/tv/on_the_air?api_key=${apiKey}&language=en-US&page=1`;
+
         const movieResponse = await fetch(movieUrl);
         const movieData = await movieResponse.json();
 
@@ -17,15 +19,18 @@ async function fetchMedia(){
         [...movieData.results, ...tvData.results].forEach(media => {
             const releaseDate = media.release_date || media.first_air_date;
 
-            //checks for movies that will come out after the current day
-            if (releaseDate && releaseDate >= today){
+            //checks for movies or shows that will come out after the current day
+            if (releaseDate && releaseDate > today){
                 const mediaCard = document.createElement("div");
+                mediaCard.className = "media-card";
+                yr = releaseDate.split('-')[0]
                 mediaCard.innerHTML = `
                     <img src="https://image.tmdb.org/t/p/w500${media.poster_path}" alt="${media.title || media.name}">
-                    <h2>${media.title || media.name}</h2>
+                    <h2>${media.title || media.name} (${yr}) </h2>
 
                 `;
-                mediaCard.onclick = () => openModal(media.id, media.title || media.name, media.media_type || (media.release_date ? "movie" : "tv"));
+                const type = media.release_date ? "movie" : "tv";
+                mediaCard.onclick = () => openModal(media.id, media.title || media.name, type);
                 mediaContainer.appendChild(mediaCard);
             }
 
@@ -51,19 +56,27 @@ async function openModal(mediaId, mediaTitle, mediaType) {
         const castResponse = await fetch(castUrl);
         const castData = await castResponse.json();
 
+
         document.getElementById("modalTitle").innerText = detailsData.title || detailsData.name;
         document.getElementById("modalOverview").innerText = detailsData.overview || "No overview available.";
         document.getElementById("releaseDate").innerText = `Release Date: ${detailsData.release_date || detailsData.first_air_date}`;
+        document.getElementById("countdown").innerText = `Countdown: ${getCountdown(detailsData.release_date || detailsData.first_air_date)}`;
         document.getElementById("genres").innerText = "Genres: " + detailsData.genres.map(genre => genre.name).join(", ");
         document.getElementById("cast").innerText = "Cast: " + castData.cast.slice(0, 5).map(actor => actor.name).join(", ");
 
-        console.log("Modal opened for:", mediaTitle);
+        setInterval(() => {
+            document.querySelectorAll(".countdown").forEach(element => {
+                const releaseDate = element.getAttribute("data-release");
+                element.innterText = getCountdown(releaseDate);
+            });
+        }, 60000); //Updates every 60 seconds
+
         if (trailerData.results.length>0) {
             document.getElementById("trailerContainer").innerHTML = `
                 <iframe width="100%" height="250" src="https://www.youtube.com/embed/${trailerData.results[0].key}" frameborder="0" allowfullscreen></iframe>
             `;
         } else {
-            document.getElementById("trailerContainer").innerHTML = "<p>No trailer available</p>";
+            document.getElementById("trailerContainer").innerHTML = "<p>(Trailer Unavailable)</p>";
         }
 
         document.getElementById("mediaModal").style.display = "block";
@@ -73,6 +86,22 @@ async function openModal(mediaId, mediaTitle, mediaType) {
     }
 }
 
+function getCountdown(releaseDate) {
+    const releaseTime = new Date(releaseDate).getTime();
+    const now = new Date().getTime();
+    const timeDiff = releaseTime - now;
+
+    if (timeDiff <= 0){
+        return "Movie is in theaters now!!"
+    }
+
+    const days = Math.floor(timeDiff / (1000*60*60*24));
+    const hours = Math.floor((timeDiff % (1000*60*60*24)) / (1000*60*60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000*60));
+
+    return `${days}d ${hours}h ${minutes}m left until release ⏳`;
+
+}
 function closeModal(){
     document.getElementById("mediaModal").style.display = "none";
 }
