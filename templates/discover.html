@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie & TV Search</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='discover.css')}}">
+</head>
+<body>
+    <div class="main-container">
+        <!--Search Form-->
+        <form onsubmit="searchMedia(); return false;">
+            <h1>Search a Movie or TV Show 🎬:</h1>
+            <input type="text" id="searchBox" required>
+            <button type="submit">Search</button>
+        </form>
+        <!--Results section-->
+        <div id="results" class="grid-container"></div>
+    </div>
+
+    <div id="movieModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span> <!--Close button-->
+            <h2 id="modalTitle"></h2>
+            <p id="modalOverview"></p>
+            <p id="genres"></p>
+
+            <!--Review Submission-->
+            <h3>Leave a Review:</h3>
+            <form id="reviewForm" action="/submit_review" method="POST">
+                {{ form.hidden_tag() }} <!--Protects and CSRF attacks-->
+                <input type="hidden" id="movieIdInput" name="movie_id">
+                <input type="hidden" id="movieTitleInput" name="movie_title">
+
+                <div class = "review-container">
+                    <textarea name="review_text" id="reviewText" placeholder="Write your review here..."></textarea>
+                    <button type="submit">Submit Review</button>
+                </div>
+            </form>
+
+            <!--Reviews Section-->
+            <h3>Your Reviews:</h3>
+            <div id="reviewList"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+    window.onload = function () {
+        console.log("CSRF Token:", document.querySelector("input[name='csrf_token']").value);
+    };
+    </script>
+
+
+</body>
+</html>
+
+

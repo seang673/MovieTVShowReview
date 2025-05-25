@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Login To Your Account</h2>
+        <form action="/login" method="POST">
+            <input type="hidden" name="csrf_token" value ="{{ csrf_token() }}">
+
+            <!--Login Form-->
+            <div class="usern">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="passw">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="subButton">
+                <button type="submit" class="btn">Login</button>
+            </div>
+        </form>
+        <p class="login-link">Are you new here? <a href="/signup">SignUp</a></p>
+    </div>
+
+</body>
+</html>
