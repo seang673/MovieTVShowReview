@@ -2,9 +2,17 @@
 const apiKey = "462908883a54600a4f35c65fdb0475cc";
 async function fetchMedia(){
     try{
+        const today = new Date();
+        const fiveMonthsLater = new Date();
+        fiveMonthsLater.setMonth(today.getMonth() + 5);
 
-        const movieUrl = `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=en-US&page=1`;
-        const tvUrl = `https://api.themoviedb.org/3/tv/on_the_air?api_key=${apiKey}&language=en-US&page=1`;
+        const startDate = new Date().toISOString().split("T")[0];  //Get today's date
+        const endDate = fiveMonthsLater.toISOString().split("T")[0];
+
+        const movieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&primary_release_date.gte=${startDate}&primary_release_date.lte=${endDate}`;
+        const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&first_air_date.gte=${startDate}&first_air_date.lte=${endDate}`;
+
+
 
         const movieResponse = await fetch(movieUrl);
         const movieData = await movieResponse.json();
@@ -13,14 +21,14 @@ async function fetchMedia(){
         const tvData = await tvResponse.json();
 
         const mediaContainer = document.getElementById("mediaContainer");
-        const today = new Date().toISOString().split("T")[0];  //Get today's date
-
 
         [...movieData.results, ...tvData.results].forEach(media => {
             const releaseDate = media.release_date || media.first_air_date;
 
-            //checks for movies or shows that will come out after the current day
-            if (releaseDate && releaseDate > today){
+                if (!releaseDate || releaseDate < startDate){
+                    return;
+                }
+
                 const mediaCard = document.createElement("div");
                 mediaCard.className = "media-card";
                 yr = releaseDate.split('-')[0]
@@ -32,7 +40,7 @@ async function fetchMedia(){
                 const type = media.release_date ? "movie" : "tv";
                 mediaCard.onclick = () => openModal(media.id, media.title || media.name, type);
                 mediaContainer.appendChild(mediaCard);
-            }
+
 
         });
     } catch (error) {
