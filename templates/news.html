@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='news.css')}}">
+</head>
+<body>
+    <h1> Movie & TV News </h1>
+    <div id="news-container">
+        <div class="movie-news">
+            <h2>Movie News and Articles</h2>
+            <div id="movieNews"></div>
+        </div>
+        <div class="shows-news">
+            <h2>TV Show News and Articles</h2>
+            <div id="showsNews"></div>
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='newsScript.js') }}"></script>
+</body>
+</html>

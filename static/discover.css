@@ -131,9 +131,21 @@ button:hover{
     border-radius:5px;
 }
 
+.rating {
+    gap: 5px;
+    padding-bottom: 12px;
+    justify-content: center;
+}
 
+.rating span {
+    font-size: 29px;
+    cursor: pointer;
+    color: gray;
+    transition: color 0.2s ease-in-out;
+}
 
-
-
-
+/* ✅ Keeps clicked stars highlighted permanently */
+.selected {
+    color: gold;
+}
 

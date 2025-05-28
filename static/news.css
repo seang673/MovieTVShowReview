@@ -1,0 +1,44 @@
+body{
+    background:  #270eb2;
+    background-size: 100% 100vh;
+    color: white;
+    text-align: center;
+}
+
+#news-container{
+    display:flex;
+    justify-content: space-between;
+    gap:5px;
+}
+h1, h2{
+    text-align:center;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.movie-news, .shows-news {
+    width: 35%;
+    height:30px;
+    color: white;
+    padding: 15px;
+    margin-right:8px;
+    margin-left:8px;
+    border-radius: 12px;
+}
+
+.movie-news p, .shows-news p{
+    font-family:'Times New Roman', Times, serif;
+}
+
+
+.news-card {
+    background: #082158;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+.news-card a {
+    color: gold;
+    text-decoration: none;
+}
+

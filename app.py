@@ -127,6 +127,49 @@ def logout():
     session.pop("user", None)
     return render_template("login.html")
 
+#Rate movies
+@app.route("/rate_movie", methods=["POST"])
+def rate_movie():
+    if "user_id" not in session:
+        return jsonify({"error": "User not logged in"}), 403
+
+    data = request.json
+    movie_id = data.get("movie_id")
+    rating = data.get("rating")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+                   INSERT INTO ratings(user_id, movie_id, rating)
+                   VALUES (%s, %s, %s)
+                   ON CONFLICT (user_id, movie_id)
+                   DO UPDATE SET rating = EXCLUDED.rating;
+                   """, (session["user_id"], movie_id, rating))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return jsonify({"success": True})
+
+@app.route("/get_user_rating/<int:movie_id>")
+def get_user_rating(movie_id):
+    if "user_id" not in session:
+        return jsonify({"error": "User not logged in"}), 403
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT rating FROM ratings WHERE movie_id = %s AND user_id = %s", (movie_id, session["user_id"]))
+    user_rating = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({"user_rating": user_rating[0] if user_rating else None})
+
+
+
 @app.route("/submit_review", methods=["POST"])
 def submit_review():
     form = ReviewForm()
@@ -168,6 +211,30 @@ def get_reviews(movie_id):
 
     return jsonify({"reviews": [review[0] for review in reviews]})
 
+import requests
+
+API_KEY = "b63c63818bdd413db95bbdbc2e8298d9"
+
+@app.route("/get_news")
+def get_news():
+    platforms = ["Neflix", "Hulu", "HBO", "Disney+", "Amazon Prime"]
+    tv_news = []
+
+    for platform in platforms:
+        tv_url = f"https://newsapi.org/v2/everything?q={platform}&language=en&pageSize=30&apiKey={API_KEY}"
+        response = requests.get(tv_url).json()
+        tv_news.extend(response["articles"])
+
+    tv_news = tv_news[:30]
+
+    movie_url = f"https://newsapi.org/v2/everything?q=movies&language=en&pageSize=30&apiKey={API_KEY}"
+    movie_response = requests.get(movie_url).json()
+
+
+    return jsonify({"movies": movie_response["articles"], "tv_shows": tv_news})
+
+
+
 #Ensures the database connection closes properly
 @app.teardown_appcontext
 def close_connection(exception=None):
@@ -200,6 +267,10 @@ def discover():
 @app.route("/upcoming")
 def soonCome():
     return render_template("upcoming.html")
+
+@app.route("/news")
+def getNews():
+    return render_template("news.html")
 
 @app.route("/search")
 def search():

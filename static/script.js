@@ -1,3 +1,5 @@
+console.log("JavaScript is loaded");
+
 async function searchMedia(){
     let query = document.getElementById('searchBox').value;
     if (query.length < 2) {
@@ -124,6 +126,75 @@ async function openModal(mediaId, mediaTitle, mediaType){
         console.error("Error fetching media details:", error);
     }
 }
+
+function rateMovie(movieId, rating) {
+    console.log(`Sending rating: ${rating} for movieId: ${movieId}`);
+
+    fetch("/rate_movie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({movie_id: movieId, rating})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log("Rating submtted successfully");
+        } else{
+            console.error("Error submitting rating:", data.error);
+        }
+    })
+    .catch(error => console.error("Fetch error:", error));
+}
+
+document.querySelectorAll(".rating span").forEach(star => {
+    star.addEventListener("mouseover", function() {
+        stars.forEach((s, i) => {
+            s.style.color = i <= index ? "gold" : "gray"; // ✅ Highlights stars before and including hovered one
+        });
+    });
+    star.addEventListener("mouseout", function() {
+        stars.forEach(s => s.style.color = "gray"); // ✅ Resets color when mouse leaves
+    });
+});
+
+
+document.querySelectorAll(".rating span").forEach((star, index, stars) => {
+    star.addEventListener("click", function() {
+        const rating = index + 1;
+        console.log(`Clicked star: ${rating}`);
+
+        const movieId = document.querySelector(".rating").getAttribute("data-movie-id");
+        rateMovie(movieId, rating);
+
+        stars.forEach((s, i) => {
+            s.classList.toggle("selected", i < rating);
+        });
+
+    });
+});
+
+
+function getUserRating(movieId){
+    fetch(`/get_user_rating/${movieId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.user_rating !== null) {
+            highlightStars(data.user_rating); // ✅ Apply stored rating
+        }
+    })
+    .catch(error => console.error("Error fetching user rating:", error));
+}
+
+function highlightStars(rating) {
+    const stars = document.querySelectorAll(".rating span");
+    stars.forEach((star, index) => {
+        star.classList.toggle("selected", index < rating);
+    });
+}
+const movieId = document.querySelector(".rating").getAttribute("data-movie-id"); // ✅
+getUserRating(movieId);
+
+
 
 async function submitReview() {
     let reviewText = document.getElementById("reviewText").value;

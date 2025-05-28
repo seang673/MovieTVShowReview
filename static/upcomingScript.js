@@ -107,7 +107,7 @@ function getCountdown(releaseDate) {
     const hours = Math.floor((timeDiff % (1000*60*60*24)) / (1000*60*60));
     const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000*60));
 
-    return `${days}d ${hours}h ${minutes}m left until release ⏳`;
+    return `${days+1}d ${hours}h ${minutes}m left until release ⏳`;
 
 }
 function closeModal(){
