@@ -15,7 +15,7 @@ function fetchNews() {
 
         tvContainer.innerHTML = data.tv_shows.map(article => `
             <div class="news-card">
-                <h3>${article.title}</h3>
+                <h3><b>${article.title}</b></h3>
                 <p>${article.description}</p>
                 <a href="${article.url}" target="_blank">Read More</a>
             </div>

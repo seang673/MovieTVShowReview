@@ -149,3 +149,16 @@ button:hover{
     color: gold;
 }
 
+.back{
+    position:absolute;
+    left: 20px;
+    width:75px;
+    top:10px;
+    background:rgb(90, 90, 90);
+    color:white;
+    text-align:center;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor:pointer;
+    transition: background-color 0.3s ease-in-out;
+}
