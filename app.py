@@ -221,13 +221,13 @@ def get_news():
     tv_news = []
 
     for platform in platforms:
-        tv_url = f"https://newsapi.org/v2/everything?q={platform}&language=en&pageSize=30&apiKey={API_KEY}"
+        tv_url = f"https://newsapi.org/v2/everything?q={platform}&language=en&pageSize=15&apiKey={API_KEY}"
         response = requests.get(tv_url).json()
         tv_news.extend(response["articles"])
 
     tv_news = tv_news[:30]
 
-    movie_url = f"https://newsapi.org/v2/everything?q=movies&language=en&pageSize=30&apiKey={API_KEY}"
+    movie_url = f"https://newsapi.org/v2/everything?q=movies&language=en&pageSize=15&apiKey={API_KEY}"
     movie_response = requests.get(movie_url).json()
 
 

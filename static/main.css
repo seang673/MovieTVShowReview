@@ -1,10 +1,37 @@
-
+body{
+    display: flex;
+    flex-direction:row;
+    gap:8rem;
+    justify-content: center;
+    align-items:center;
+}
 .main-container{
+
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: 3rem;
+    gap: 1rem;
+    width:300px;
+    margin-right:75px;
+}
+
+.x-container{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content: center;;
+    padding:10px;
+    background-color:rgb(18, 18, 84);
+    border-radius:8px;
+    width:300px;
+    margin-left:175px;
+}
+
+h1{
+    color:white;
+    font-family:Georgia, 'Times New Roman', Times, serif;
 }
 
 button{
