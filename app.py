@@ -276,6 +276,11 @@ def getNews():
 def search():
     return render_template("search.html")
 
+@app.route("/logout")
+def logout_account():
+    session.clear()
+    return redirect(url_for("login"))
+
 @app.route("/")
 def home():
     return render_template("login.html")

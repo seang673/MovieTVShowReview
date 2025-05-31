@@ -24,9 +24,10 @@ body{
     justify-content: center;;
     padding:10px;
     background-color:rgb(18, 18, 84);
-    border-radius:8px;
+    border-radius:13px;
     width:300px;
     margin-left:175px;
+    margin-top:175px;
 }
 
 h1{

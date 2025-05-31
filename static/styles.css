@@ -1,3 +1,8 @@
+body{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
 
 .auth-container{
     display:flex;
@@ -11,7 +16,6 @@
 .signup-container, .login-container{
     display:flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     gap: 2rem;
     padding:20px;
@@ -28,4 +32,35 @@
 }
 .subButton{
     justify-content:center;
+}
+.btn{
+    background:rgb(101, 100, 100);
+    color:white;
+    padding:10px 12px;
+    border-radius:9px;
+    text-align:center;
+    cursor:pointer;
+}
+
+.subButton {
+    display:flex;
+    justify-content: center;
+}
+
+.back{
+    position:absolute;
+    left: 20px;
+    width:75px;
+    top:10px;
+    background:rgb(90, 90, 90);
+    color:white;
+    text-align:center;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor:pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.back:hover{
+    background:rgb(43, 43, 43)
 }
