@@ -9,7 +9,7 @@
 <body>
 
     <div class="login-container">
-        <button class="back" onclick="history.back()"><b>🔙Back</b></button>
+        <button class="back" onclick="window.location.href='/index'"><b>🔙Back</b></button>
         <h2>Login To Your Account</h2>
         <form action="/login" method="POST">
             <input type="hidden" name="csrf_token" value ="{{ csrf_token() }}">

@@ -4,6 +4,8 @@ body{
     gap:8rem;
     justify-content: center;
     align-items:center;
+    background:linear-gradient(to bottom, #1A1A2E, #007BFF);
+    background-attachment:fixed;
 }
 .main-container{
 
@@ -17,7 +19,6 @@ body{
 }
 
 .x-container{
-
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -26,8 +27,8 @@ body{
     background-color:rgb(18, 18, 84);
     border-radius:13px;
     width:300px;
-    margin-left:175px;
-    margin-top:175px;
+    margin-left:225px;
+    margin-top:145px;
 }
 
 h1{
@@ -46,4 +47,10 @@ button{
 }
 button:hover{
     background-color:rgb(53, 52, 52);
+}
+
+.logout{
+    position:absolute;
+    right:20px;
+    top:10px;
 }

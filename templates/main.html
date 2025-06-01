@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
 </head>
 <body>
-    <button onclick="window.location.href='{{ url_for('logout')}}'">Logout</button>
+    <button class="logout" onclick="window.location.href='{{ url_for('logout')}}'">Logout</button>
     <div class="main-container">
         <button onclick="window.location.href='/discover'">Search and Review Movies and Shows🎬</button>
         <button onclick="window.location.href='/upcoming'">Upcoming Movies and Shows📽️</button>
@@ -15,7 +15,7 @@
         <button onclick="window.location.href='/profile'">Profile🦸</button>
     </div>
     <div class="x-container">
-        <h1>Discussing Film</h1>
+        <h1>Discussing Film Posts</h1>
         <iframe src='https://widgets.sociablekit.com/twitter-feed/iframe/25562182' frameborder='0' width='300' height='415'></iframe>
     </div>
 

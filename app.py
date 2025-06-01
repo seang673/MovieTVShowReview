@@ -58,6 +58,14 @@ class ReviewForm(FlaskForm):
     movie_title = StringField("Movie Title", validators=[DataRequired()])
     review_text = TextAreaField("Review Text", validators=[DataRequired()])
 
+class SavedMedia(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    media_id = db.Column(db.String(50), unique=True, nullable=False)
+    title = db.Column(db.String(250), nullable=False)
+    media_type = db.Column(db.String(50), nullable=False)
+    release_date = db.Column(db.String(50), nullable=True)
+    poster_url = db.Column(db.String(250), nullable=True)
+
 
 
 def get_db_connection():
@@ -233,7 +241,19 @@ def get_news():
 
     return jsonify({"movies": movie_response["articles"], "tv_shows": tv_news})
 
-
+@app.route("/save_media", methods=["POST"])
+def save_media():
+    data = request.json
+    new_media = SavedMedia(
+        media_id = data["media_id"],
+        title = data["title"],
+        media_type = data["media_type"],
+        release_date = data["release_date"],
+        poster_url = data["poster_url"]
+    )
+    db.session.add(new_media)
+    db.session.commit()
+    return jsonify({"message": "Media saved successfully!"})
 
 #Ensures the database connection closes properly
 @app.teardown_appcontext
@@ -268,6 +288,9 @@ def discover():
 def soonCome():
     return render_template("upcoming.html")
 
+@app.route("/index")
+def getIndex():
+    return render_template("index.html")
 @app.route("/news")
 def getNews():
     return render_template("news.html")

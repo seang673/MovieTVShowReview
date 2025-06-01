@@ -11,6 +11,7 @@
     <h1> Upcoming Movies and TV Shows!</h1>
     <div id="mediaContainer"></div>
 
+
     <div id ="mediaModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -21,6 +22,7 @@
             <p id="genres"></p>
             <p id="cast"></p>
             <div id="trailerContainer"></div>
+            <button class="btn" onclick="saveMedia()">Save To List</button>
         </div>
     </div>
     <script src="{{ url_for('static', filename='upcomingScript.js') }}"></script>

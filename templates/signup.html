@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="signup-container">
-        <button class="back" onclick="history.back()">🔙Back</button>
+        <button class="back" onclick="window.location.href='/index'">🔙Back</button>
         <h2>Sign Up</h2>
         <form action="/signup" method="POST">
             <input type="hidden" name="csrf_token" value ="{{ csrf_token() }}">

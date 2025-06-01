@@ -13,7 +13,6 @@ async function fetchMedia(){
         const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&first_air_date.gte=${startDate}&first_air_date.lte=${endDate}`;
 
 
-
         const movieResponse = await fetch(movieUrl);
         const movieData = await movieResponse.json();
 
@@ -109,6 +108,29 @@ function getCountdown(releaseDate) {
 
     return `${days+1}d ${hours}h ${minutes}m left until release ⏳`;
 
+}
+
+async function saveMedia(){
+    const mediaId = document.getElementById("modalTitle").getAttribute("data-id");
+    const mediaTitle = document.getElementById("modalTitle").innerText;
+    const mediaType = document.getElementById("modalTitle").getAttribute("data-type");
+    const releaseDate = document.getElementById("releaseDate").innerText.split(": ")[1];
+    const posterUrl = document.querySelector(".media-card img").src;
+
+    const response = await fetch("/save_media", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            media_id: mediaId,
+            title: mediaTitle,
+            media_type: mediaType,
+            release_date: releaseDate,
+            poster_url: posterUrl
+        })
+    });
+
+    const result = await response.json();
+    alert(result.message);
 }
 function closeModal(){
     document.getElementById("mediaModal").style.display = "none";
