@@ -21,8 +21,6 @@ class ReviewForm(FlaskForm):
     movie_title = StringField("Movie Title", validators=[DataRequired()])
     review_text = TextAreaField("Review Text", validators=[DataRequired()])
 
-
-
 #Load the environment variables
 load_dotenv()
 
@@ -32,7 +30,7 @@ app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 app.config['WTF_CSRF_SECRET_KEY'] = os.getenv("CSRF_SECRET_KEY")
 
 db = SQLAlchemy(app)
-csrf = CSRFProtect(app)
+csrf = CSRFProtect(app)  #Enables CSRF protection
 
 #Define Review Model
 class Review(db.Model):
@@ -243,17 +241,30 @@ def get_news():
 
 @app.route("/save_media", methods=["POST"])
 def save_media():
-    data = request.json
-    new_media = SavedMedia(
-        media_id = data["media_id"],
-        title = data["title"],
-        media_type = data["media_type"],
-        release_date = data["release_date"],
-        poster_url = data["poster_url"]
-    )
-    db.session.add(new_media)
-    db.session.commit()
-    return jsonify({"message": "Media saved successfully!"})
+    try:
+        data = request.get_json()
+        print("Recieved JSON:", data)
+
+        if not data or "csrf_token" not in data:
+            print("Error: CSRF token missing")
+            return jsonify({"error": "CSRF token missing"}), 400
+
+        new_media = SavedMedia(
+            media_id = data.get("media_id"),
+            title = data.get("title"),
+            media_type = data.get("media_type"),
+            release_date = data.get("release_date"),
+            poster_url = data.get("poster_url")
+        )
+        db.session.add(new_media)
+        db.session.commit()
+
+        return jsonify({"message": "Media saved successfully!"}),200
+    except Exception as e:
+        print("Error:", str(e))  # ✅ Log error in terminal
+
+        return jsonify({"error": str(e)}), 500
+
 
 #Ensures the database connection closes properly
 @app.teardown_appcontext

@@ -22,7 +22,9 @@
             <p id="genres"></p>
             <p id="cast"></p>
             <div id="trailerContainer"></div>
-            <button class="btn" onclick="saveMedia()">Save To List</button>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- ✅ Make sure it exists here -->
+            <button type="button" class="btn" onclick="saveMedia()">Save To List</button>
+
         </div>
     </div>
     <script src="{{ url_for('static', filename='upcomingScript.js') }}"></script>

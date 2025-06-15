@@ -71,6 +71,10 @@ async function openModal(mediaId, mediaTitle, mediaType) {
         document.getElementById("genres").innerText = "Genres: " + detailsData.genres.map(genre => genre.name).join(", ");
         document.getElementById("cast").innerText = "Cast: " + castData.cast.slice(0, 5).map(actor => actor.name).join(", ");
 
+        document.getElementById("modalTitle").setAttribute("data-id", mediaId);
+        document.getElementById("modalTitle").setAttribute("data-type", mediaType);
+
+
         setInterval(() => {
             document.querySelectorAll(".countdown").forEach(element => {
                 const releaseDate = element.getAttribute("data-release");
@@ -111,27 +115,56 @@ function getCountdown(releaseDate) {
 }
 
 async function saveMedia(){
+    const csrfTokenElement = document.querySelector("input[name='csrf_token']");
+    if (!csrfTokenElement) {
+        console.error("CSRF token input field not found!");
+        return;
+    }
+    const csrfToken = csrfTokenElement.value;
+
     const mediaId = document.getElementById("modalTitle").getAttribute("data-id");
     const mediaTitle = document.getElementById("modalTitle").innerText;
     const mediaType = document.getElementById("modalTitle").getAttribute("data-type");
-    const releaseDate = document.getElementById("releaseDate").innerText.split(": ")[1];
+    const releaseDateElement = document.getElementById("releaseDate");
+    const releaseDate = releaseDateElement ? releaseDateElement.textContent.replace("Release Date: ", "").trim() : null;
     const posterUrl = document.querySelector(".media-card img").src;
 
-    const response = await fetch("/save_media", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            media_id: mediaId,
-            title: mediaTitle,
-            media_type: mediaType,
-            release_date: releaseDate,
-            poster_url: posterUrl
-        })
-    });
+     const payload = {
+        media_id: mediaId,
+        title: mediaTitle,
+        media_type: mediaType,
+        release_date: releaseDate,
+        poster_url: posterUrl,
+        csrf_token: csrfToken
+    };
 
-    const result = await response.json();
-    alert(result.message);
+    console.log("Sending JSON:", JSON.stringify(payload));
+
+    try{
+        const response = await fetch("/save_media", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const resultText = await response.text(); // ✅ Log raw response before parsing
+        console.log("Raw Response:", resultText);
+
+        try{
+            const result = JSON.parse(resultText);
+            alert(result.message || "Error occurred");
+        } catch(error){
+            console.error("Error parsing JSON response:", error);
+            alert("Failed to save media");
+        }
+    } catch (error){
+        console.error("Fetch Error:", error);
+    }
 }
+
 function closeModal(){
     document.getElementById("mediaModal").style.display = "none";
 }
