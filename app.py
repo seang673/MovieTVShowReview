@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, jsonify, session, render_template, u
 import secrets
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
+from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import conn, cursor  # Import DB connection
 import psycopg2
@@ -10,15 +11,13 @@ from dotenv import load_dotenv
 import os
 from flask_wtf.csrf import CSRFProtect
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, HiddenField
+from wtforms import StringField, TextAreaField, HiddenField, IntegerField
 from wtforms.validators import DataRequired
-
 
 # ✅ Define Review Form
 class ReviewForm(FlaskForm):
-    csrf_token = HiddenField()
-    movie_id = StringField("Movie ID", validators=[DataRequired()])
-    movie_title = StringField("Movie Title", validators=[DataRequired()])
+    movie_id = HiddenField("Movie ID")
+    movie_title = HiddenField("Movie Title")
     review_text = TextAreaField("Review Text", validators=[DataRequired()])
 
 #Load the environment variables
@@ -31,30 +30,49 @@ app.config['WTF_CSRF_SECRET_KEY'] = os.getenv("CSRF_SECRET_KEY")
 
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)  #Enables CSRF protection
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
 
 #Define Review Model
 class Review(db.Model):
+    __tablename__ = "reviews"
     id = db.Column(db.Integer, primary_key=True)
-    movie_id = db.Column(db.String(50), nullable=False)
-    movie_title = db.Column(db.String(150), nullable=False)
-    review_text = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    media_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    movie_title = db.Column(db.String(255), nullable=True)
 
-class Users(db.Model):  # ✅ Ensure correct naming matches PostgreSQL
+    rating = db.Column(db.Integer, nullable=False)
+    review_text = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    user = db.relationship("User", back_populates="reviews")  # ✅ Establish relationship
+
+    __table_args__ = (
+        db.UniqueConstraint('media_id', 'user_id', name='unique_media_review'),
+        db.CheckConstraint('rating BETWEEN 1 AND 5', name='valid_rating')
+    )
+
+class User(db.Model):  # ✅ Ensure correct naming matches PostgreSQL
+    __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     password_hash = db.Column(db.Text, nullable=False)
-    reviews = db.relationship("Review", backref="user", lazy=True)
 
+    reviews = db.relationship("Review", back_populates="user", lazy=True)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # ✅ Define Review Form (WTForms)
 class ReviewForm(FlaskForm):
-    csrf_token = HiddenField()
-    movie_id = StringField("Movie ID", validators=[DataRequired()])
-    movie_title = StringField("Movie Title", validators=[DataRequired()])
-    review_text = TextAreaField("Review Text", validators=[DataRequired()])
+    movie_id = HiddenField("Movie ID")
+    movie_title = HiddenField("Movie Title")
+    review_text = TextAreaField("Review", validators=[DataRequired()])
+    rating = IntegerField("Rating", validators=[DataRequired()])
 
 class SavedMedia(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -63,7 +81,6 @@ class SavedMedia(db.Model):
     media_type = db.Column(db.String(50), nullable=False)
     release_date = db.Column(db.String(50), nullable=True)
     poster_url = db.Column(db.String(250), nullable=True)
-
 
 
 def get_db_connection():
@@ -133,83 +150,56 @@ def logout():
     session.pop("user", None)
     return render_template("login.html")
 
-#Rate movies
-@app.route("/rate_movie", methods=["POST"])
-def rate_movie():
-    if "user_id" not in session:
-        return jsonify({"error": "User not logged in"}), 403
-
-    data = request.json
-    movie_id = data.get("movie_id")
-    rating = data.get("rating")
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-                   INSERT INTO ratings(user_id, movie_id, rating)
-                   VALUES (%s, %s, %s)
-                   ON CONFLICT (user_id, movie_id)
-                   DO UPDATE SET rating = EXCLUDED.rating;
-                   """, (session["user_id"], movie_id, rating))
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-    return jsonify({"success": True})
-
-@app.route("/get_user_rating/<int:movie_id>")
-def get_user_rating(movie_id):
-    if "user_id" not in session:
-        return jsonify({"error": "User not logged in"}), 403
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT rating FROM ratings WHERE movie_id = %s AND user_id = %s", (movie_id, session["user_id"]))
-    user_rating = cursor.fetchone()
-
-    cursor.close()
-    conn.close()
-
-    return jsonify({"user_rating": user_rating[0] if user_rating else None})
-
-
-
 @app.route("/submit_review", methods=["POST"])
 def submit_review():
-    form = ReviewForm()
+    try:
+        data = request.get_json()
+        if not data or "csrf_token" not in data:
+            return jsonify({"error": "CSRF token missing"}), 400
 
-    if form.validate_on_submit():
-        new_review = Review(
-            movie_id=form.movie_id.data,
-            movie_title=form.movie_title.data,
-            review_text=form.review_text.data,
-            user_id=session.get("user_id"),
-            timestamp=db.func.current_timestamp()
-        )
+        print("Received JSON:", data)  # ✅ Debugging step
+        user_id = session.get("user_id")
 
-        db.session.add(new_review)
+        if not user_id:
+            return jsonify({"error": "User not authenticated"}), 403
+
+
+        media_id = data.get("media_id")
+        rating_value = data.get("rating")
+        review_text = data.get("review_text")
+
+        if not media_id or not rating_value or not review_text:
+            return jsonify({"error": "Missing required fields"}), 400
+
+
+        # ✅ Check if user already submitted a review for this media
+        existing_review = Review.query.filter_by(media_id=media_id, user_id=user_id).first()
+        if existing_review:
+            existing_review.rating = rating_value
+            existing_review.review_text = review_text
+        else:
+            new_review = Review(
+                media_id=media_id,
+                user_id=user_id,
+                rating=rating_value,
+                review_text=review_text
+            )
+            db.session.add(new_review)
+
         db.session.commit()
-        return jsonify({
-            "success": True,
-            "movie_id": new_review.movie_id,
-            "review_text": new_review.review_text,
-            "movie_title": new_review.movie_title
-        })  # ✅ Returns review data instead of redirecting
+        return jsonify({"message": "Review submitted successfully!"}), 200
+    except Exception as e:
+        print("Error:", str(e))  # ✅ Logs full error in terminal
+        return jsonify({"error": str(e)}), 500
 
 
 
-    return jsonify({"success": False, "error": "Invalid form submission"})
-
-
-
-@app.route("/get_reviews/<movie_id>", methods=["GET"])
-def get_reviews(movie_id):
+@app.route("/get_reviews/<media_id>", methods=["GET"])
+def get_reviews(media_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT review_text FROM review WHERE movie_id=%s ORDER BY timestamp DESC", (movie_id,))
+    cursor.execute("SELECT review_text FROM reviews WHERE media_id=%s ORDER BY created_at DESC", (media_id,))
     reviews = cursor.fetchall()
 
     cursor.close()
@@ -271,18 +261,18 @@ def save_media():
 def close_connection(exception=None):
     cursor.close()
     conn.close()
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 @app.before_request
 def set_csrf_token():
     if '_csrf_token' not in session:
         session['_csrf_token'] = secrets.token_hex(16)  # ✅ Generates secure random CSRF token
 
-
-
 @app.route("/debug_session")
 def debug_session():
     return jsonify(dict(session))
-
 
 @app.route("/main")
 def main():
@@ -292,8 +282,9 @@ def main():
 
 @app.route("/discover", methods=["GET", "POST"])
 def discover():
+    user_id = session.get("user_id")
     form = ReviewForm()
-    return render_template("discover.html", form=form)
+    return render_template("discover.html", form=form, user_id = user_id)
 
 @app.route("/upcoming")
 def soonCome():

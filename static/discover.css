@@ -56,6 +56,14 @@ button:hover{
     background-color:#4a4747;
 }
 
+.btn{
+    padding: 10px 12px;
+    background:gray;
+    color:white;
+    border-radius:12px;
+    cursor:pointer;
+}
+
 @media screen and (max-width: 600px){
     button{
         padding: 10px 15px;

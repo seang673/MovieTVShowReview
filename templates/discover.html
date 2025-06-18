@@ -9,6 +9,14 @@
 <body>
     <div class="main-container">
         <button class="back" onclick="history.back()"><b>🔙Back</b></button>
+        <!-- Display user's name if logged in -->
+        {% if current_user.is_authenticated %}
+            <p>Welcome, {{ current_user.username }}!</p>
+            <input type="hidden" id="userIdInput" name="user_id" value="{{ user_id }}">
+        {% else %}
+            <p>Please log in to submit a review.</p>
+        {% endif %}
+
         <!--Search Form-->
         <form onsubmit="searchMedia(); return false;">
             <h1>Search a Movie or TV Show 🎬:</h1>
@@ -25,32 +33,38 @@
 
             <h2 id="modalTitle"></h2>
             <p id="modalOverview"></p>
+
             <p id="genres"></p>
+            <button type="button" class="btn" onclick="saveMedia()">Save To List</button>
 
             <!--Review Submission-->
             <h3>Leave a Review:</h3>
-
-            <form id="reviewForm" action="/submit_review" method="POST">
-                {{ form.hidden_tag() }} <!--Protects and CSRF attacks-->
+            <form id="reviewForm">
+                <input type="hidden" id="csrfToken" value="{{ csrf_token() }}"> <!--Protects and CSRF attacks-->
                 <input type="hidden" id="movieIdInput" name="movie_id">
                 <input type="hidden" id="movieTitleInput" name="movie_title">
+                <input type="hidden" id="ratingInput" name="rating">
+                <input type="hidden" id="userIdInput" name="user_id" value="{{user_id}}">
 
-                <div class="rating" data-movie-id="{{movie_id}}">
-                    <span data-value="1">★</span>
-                    <span data-value="2">★</span>
-                    <span data-value="3">★</span>
-                    <span data-value="4">★</span>
-                    <span data-value="5">★</span>
+
+                <div class="rating">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
                 </div>
                 <div class = "review-container">
                     <textarea name="review_text" id="reviewText" placeholder="Write your review here..."></textarea>
-                    <button type="submit">Submit Review</button>
+                    <button type="button" onclick="submitReview()">Submit Review</button>
                 </div>
             </form>
 
             <!--Reviews Section-->
             <h3>Your Reviews:</h3>
             <div id="reviewList"></div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- ✅ Make sure it exists here -->
+
         </div>
     </div>
 

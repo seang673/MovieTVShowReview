@@ -88,7 +88,7 @@ async function openModal(mediaId, mediaTitle, mediaType){
     try{
         const response = await fetch(apiUrl);
         if (!response.ok){
-            throw new error("Failed to fetch media details");
+            throw new Error("Failed to fetch media details");
         }
         const data = await response.json();
 
@@ -100,12 +100,19 @@ async function openModal(mediaId, mediaTitle, mediaType){
 
         document.getElementById("modalTitle").innerText = `${mediaTitle} (${releaseYear})`;
         document.getElementById("modalOverview").innerText = data.overview || "(No overview available)";
+
+        let releaseDate = mediaType === "movie" ?
+        (data.release_date ? data.release_date : "N/A") :
+        (data.first_air_date ? data.first_air_date : "N/A");
+
+
         document.getElementById("movieIdInput").value = mediaId;  // ✅ Store movie ID in hidden field
         document.getElementById("movieTitleInput").value = mediaTitle;  // ✅ Store movie title in hidden field
 
         document.getElementById("genres").innerText = ("G͟e͟n͟r͟e͟s͟: " + genres) || "Genres: (Unavailable)"
         document.getElementById("movieModal").style.display = "block";
-
+        document.getElementById("modalTitle").setAttribute("data-id", mediaId);
+        document.getElementById("modalTitle").setAttribute("data-type", mediaType);
 
         // ✅ Fetch past reviews for this movie
         const reviewsResponse = await fetch(`/get_reviews/${mediaId}`);
@@ -121,9 +128,86 @@ async function openModal(mediaId, mediaTitle, mediaType){
             reviewList.appendChild(reviewItem);
         });
 
+        document.getElementById("movieModal").style.display = "block";
 
-    } catch (error) {
-        console.error("Error fetching media details:", error);
+        // ✅ Debug: Ensure stars exist when modal opens
+        console.log("Stars Found After Modal Opens:", document.querySelectorAll(".star").length);
+
+        // ✅ Event delegation: Attach listener after modal opens
+        document.getElementById("reviewForm").addEventListener("click", function(event) {
+            if (event.target.classList.contains("star")) {
+                const rating = event.target.getAttribute("data-value");
+
+                // Remove 'selected' class from all stars
+                document.querySelectorAll(".star").forEach(s => s.classList.remove("selected"));
+
+                // Highlight clicked star and all previous stars
+                event.target.classList.add("selected");
+                let prevSibling = event.target.previousElementSibling;
+                while (prevSibling) {
+                    prevSibling.classList.add("selected");
+                    prevSibling = prevSibling.previousElementSibling;
+                }
+
+                // ✅ Store rating in hidden input
+                document.getElementById("ratingInput").value = rating;
+
+                console.log("Selected Rating:", rating);  // ✅ Debugging step
+            }
+        });
+        } catch (error) {
+            console.error("Error fetching media details:", error);
+        }
+    }
+
+async function saveMedia(){
+    const csrfTokenElement = document.querySelector("input[name='csrf_token']");
+    if (!csrfTokenElement) {
+        console.error("CSRF token input field not found!");
+        return;
+    }
+    const csrfToken = csrfTokenElement.value;
+
+    const mediaId = document.getElementById("modalTitle").getAttribute("data-id");
+    const mediaTitle = document.getElementById("modalTitle").innerText;
+    const mediaType = document.getElementById("modalTitle").getAttribute("data-type");
+    const releaseDateElement = document.getElementById("releaseDate");
+    const releaseDate = releaseDateElement ? releaseDateElement.textContent.replace("Release Date: ", "").trim() : null;
+    const posterUrl = document.querySelector(".media-card img").src;
+
+     const payload = {
+        media_id: mediaId,
+        title: mediaTitle,
+        media_type: mediaType,
+        release_date: releaseDate,
+        poster_url: posterUrl,
+        csrf_token: csrfToken
+    };
+
+    console.log("Sending JSON:", JSON.stringify(payload));
+
+    try{
+        const response = await fetch("/save_media", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const resultText = await response.text(); // ✅ Log raw response before parsing
+        console.log("Raw Response:", resultText);
+
+        try{
+            const result = JSON.parse(resultText);
+            alert(result.message || "Error occurred");
+        } catch(error){
+            console.error("Error parsing JSON response:", error);
+            alert("Failed to save media");
+        }
+    } catch (error){
+        console.error("Fetch Error:", error);
     }
 }
 
@@ -146,86 +230,87 @@ function rateMovie(movieId, rating) {
     .catch(error => console.error("Fetch error:", error));
 }
 
-document.querySelectorAll(".rating span").forEach(star => {
-    star.addEventListener("mouseover", function() {
-        stars.forEach((s, i) => {
-            s.style.color = i <= index ? "gold" : "gray"; // ✅ Highlights stars before and including hovered one
-        });
-    });
-    star.addEventListener("mouseout", function() {
-        stars.forEach(s => s.style.color = "gray"); // ✅ Resets color when mouse leaves
-    });
-});
-
-
-document.querySelectorAll(".rating span").forEach((star, index, stars) => {
+document.querySelectorAll(".star").forEach(star => {
     star.addEventListener("click", function() {
-        const rating = index + 1;
-        console.log(`Clicked star: ${rating}`);
+        const rating = this.getAttribute("data-value");
 
-        const movieId = document.querySelector(".rating").getAttribute("data-movie-id");
-        rateMovie(movieId, rating);
+        // ✅ Remove 'selected' class from all stars
+        document.querySelectorAll(".star").forEach(s => s.classList.remove("selected"));
 
-        stars.forEach((s, i) => {
-            s.classList.toggle("selected", i < rating);
-        });
+        // ✅ Add 'selected' class to clicked star and all previous stars
+        this.classList.add("selected");
+        this.previousElementSibling?.classList.add("selected");
 
+        // ✅ Store rating inside hidden input
+        document.getElementById("ratingInput").value = rating;
+
+        console.log("Selected Rating:", rating); // ✅ Debugging step
     });
 });
 
-
-function getUserRating(movieId){
-    fetch(`/get_user_rating/${movieId}`)
-    .then(response => response.json())
-    .then(data => {
-        if (data.user_rating !== null) {
-            highlightStars(data.user_rating); // ✅ Apply stored rating
-        }
-    })
-    .catch(error => console.error("Error fetching user rating:", error));
-}
-
-function highlightStars(rating) {
-    const stars = document.querySelectorAll(".rating span");
-    stars.forEach((star, index) => {
-        star.classList.toggle("selected", index < rating);
+document.querySelectorAll(".star").forEach(star => {
+    star.addEventListener("click", function(event) {
+        console.log("Star clicked:", event.target.getAttribute("data-value"));
     });
-}
-const movieId = document.querySelector(".rating").getAttribute("data-movie-id"); // ✅
-getUserRating(movieId);
-
+});
 
 
 async function submitReview() {
-    let reviewText = document.getElementById("reviewText").value;
-    let movieId = document.getElementById("movieIdInput").value;
-    let movieTitle = document.getElementById("movieTitleInput").value;
+    const csrfToken = document.getElementById("csrfToken").value;
+    const mediaId = String(document.getElementById("movieIdInput").value);
+    const movieTitle = document.getElementById("movieTitleInput").value;
+    const rating = parseInt(document.getElementById("ratingInput").value);
+    const reviewText = document.getElementById("reviewText").value;
+    const userId = String(document.getElementById("userIdInput").value);  // ✅ Replace with actual user ID
 
-    if (!reviewText.trim()){
-        return; // Prevent empty reviews
+    if (!userId){
+        alert("User ID is missing! Ensure login");
+        return;
     }
 
-    try{
+    if (!rating || !reviewText.trim()) {
+        alert("Please select a rating and write a review!");
+        return;
+    }
+    console.log("User ID Retrieved:", typeof userId);
+    console.log("Media ID Retrieved:", typeof mediaId);
+    console.log("Movie Title:", typeof movieTitle);
+    console.log("Rating:", typeof rating);
+    console.log("Review Text:", typeof reviewText);
+
+    const payload = {
+        media_id: mediaId,
+        user_id: userId,
+        movie_title: movieTitle,
+        rating: rating,
+        review_text: reviewText,
+        csrf_token: csrfToken
+    };
+
+    console.log("Sending JSON:", JSON.stringify(payload));
+
+    try {
         const response = await fetch("/submit_review", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
             },
-            body: JSON.stringify({
-                movie_id: movieId,
-                movie_title: movieTitle,
-                review_text: reviewText
-            })
+            body: JSON.stringify(payload)
         });
-        if (!response.ok) {
-            throw new Error("Failed to submit review.");
-        }
-        document.getElementById("reviewText").value = ""; //To clear the input afterwards
-        alert("Review submitted successfully!");
 
-    } catch(error) {
-        console.error("Error:", error);
-        alert("Error submitting review: "+error)
+        const resultText = await response.text();
+        console.log("Raw Response:", resultText);
+
+        try {
+            const result = JSON.parse(resultText);
+            alert(result.message || "Error occurred");
+        } catch (error) {
+            console.error("Error parsing JSON response:", error);
+            alert("Failed to submit review.");
+        }
+    } catch (error) {
+        console.error("Fetch Error:", error);
     }
 }
 
