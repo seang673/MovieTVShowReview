@@ -4,23 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{url_for('static', filename='profile.css')}}">
 </head>
 <body>
     <button class="back" onclick="history.back()"><b>🔙Back</b></button>
     <h1>Profile</h1>
     <div id="main-container">
-        <div class="saved-container">
-            <h2>Your Saved movies and shows</h2>
-            <div id="saved"></div>
-        </div>
         <div class="reviews-container">
-            <h2>Your reviews</h2>
-            <div id="reviews"></div>
+            <h2>Your Reviews</h2>
+            {% for review in reviews %}
+                <div class="review">
+                    <strong>{{review.movie_title}}</strong><br>
+                    <div class="stars">
+                        {% for i in range(1,6)%}
+                            {% if i <= review.rating %}
+                                <i class="fa-solid fa-star" style="color: gold;"></i>
+                            {% else %}
+                                <i class="fa-regular fa-star" style="color: gold;"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p>{{review.review_text}}</p>
+                    <small>{{ review.created_at.strftime('%Y-%m-%d') }}</small>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="saved-container">
+            <h2>Your Saved Movies and Shows</h2>
+            {% for media in saved %}
+                <div class="item">
+                    <strong>{{ media.title }} ({{ media.release_date.split('-')[0] }})</strong><br>
+                    <img src="{{media.poster_url}}" width="50px" height="75px">
+                </div>
+            {% endfor %}
         </div>
 
     </div>
-
-    <script src="{{ url_for('static', filename='newsScript.js') }}"></script>
 </body>
 </html>

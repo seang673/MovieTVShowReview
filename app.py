@@ -42,7 +42,7 @@ class Review(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     movie_title = db.Column(db.String(255), nullable=True)
 
-    rating = db.Column(db.Integer, nullable=False)
+    rating=db.Column(db.Integer, nullable=False)
     review_text = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
@@ -75,7 +75,9 @@ class ReviewForm(FlaskForm):
     rating = IntegerField("Rating", validators=[DataRequired()])
 
 class SavedMedia(db.Model):
+    __tablename__ = "saved_media"
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     media_id = db.Column(db.String(50), unique=True, nullable=False)
     title = db.Column(db.String(250), nullable=False)
     media_type = db.Column(db.String(50), nullable=False)
@@ -165,6 +167,7 @@ def submit_review():
 
 
         media_id = data.get("media_id")
+        media_title = data.get("movie_title")
         rating_value = data.get("rating")
         review_text = data.get("review_text")
 
@@ -181,6 +184,7 @@ def submit_review():
             new_review = Review(
                 media_id=media_id,
                 user_id=user_id,
+                movie_title = media_title,
                 rating=rating_value,
                 review_text=review_text
             )
@@ -239,12 +243,19 @@ def save_media():
             print("Error: CSRF token missing")
             return jsonify({"error": "CSRF token missing"}), 400
 
+        user_id = session.get("user_id")
+
+        if not user_id:
+            return jsonify({"error": "User not authenticated"}), 403
+
+
         new_media = SavedMedia(
             media_id = data.get("media_id"),
             title = data.get("title"),
             media_type = data.get("media_type"),
             release_date = data.get("release_date"),
-            poster_url = data.get("poster_url")
+            poster_url = data.get("poster_url"),
+            user_id = user_id
         )
         db.session.add(new_media)
         db.session.commit()
@@ -284,7 +295,14 @@ def main():
 def discover():
     user_id = session.get("user_id")
     form = ReviewForm()
-    return render_template("discover.html", form=form, user_id = user_id)
+    return render_template("discover.html", form=form, user_id=user_id)
+
+@app.route("/profile")
+def my_profile():
+    user_id = session.get("user_id")
+    reviews = Review.query.filter_by(user_id =user_id).all()
+    saved = SavedMedia.query.filter_by(user_id=user_id).all()
+    return render_template("profile.html", reviews=reviews, saved=saved)
 
 @app.route("/upcoming")
 def soonCome():
