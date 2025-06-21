@@ -230,7 +230,6 @@ def get_news():
     movie_url = f"https://newsapi.org/v2/everything?q=movies&language=en&pageSize=15&apiKey={API_KEY}"
     movie_response = requests.get(movie_url).json()
 
-
     return jsonify({"movies": movie_response["articles"], "tv_shows": tv_news})
 
 @app.route("/save_media", methods=["POST"])
@@ -248,7 +247,6 @@ def save_media():
         if not user_id:
             return jsonify({"error": "User not authenticated"}), 403
 
-
         new_media = SavedMedia(
             media_id = data.get("media_id"),
             title = data.get("title"),
@@ -265,6 +263,37 @@ def save_media():
         print("Error:", str(e))  # ✅ Log error in terminal
 
         return jsonify({"error": str(e)}), 500
+
+@app.route("/delete_review/<int:review_id>", methods=["POST"])
+def delete_review(review_id):
+    user_id = session.get("user_id")
+
+    if not user_id:
+        return jsonify({"error": "User not authenticated"}), 403
+
+    review = Review.query.get_or_404(review_id)
+    if review.user_id != user_id:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    db.session.delete(review)
+    db.session.commit()
+    return redirect(url_for("profile"))  # or wherever you want to go next
+
+@app.route("/delete_saved_media/<int:media_id>", methods=["POST"])
+def delete_saved_media(media_id):
+    user_id = session.get("user_id")
+
+    if not user_id:
+        return jsonify({"error": "User not authenticated"}), 403
+
+    media = SavedMedia.query.get_or_404(media_id)
+    if media.user_id != user_id:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    db.session.delete(media)
+    db.session.commit()
+    return redirect(url_for("my_profile"))
+
 
 
 #Ensures the database connection closes properly
@@ -303,6 +332,8 @@ def my_profile():
     reviews = Review.query.filter_by(user_id =user_id).all()
     saved = SavedMedia.query.filter_by(user_id=user_id).all()
     return render_template("profile.html", reviews=reviews, saved=saved)
+
+
 
 @app.route("/upcoming")
 def soonCome():

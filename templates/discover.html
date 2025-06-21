@@ -4,18 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie & TV Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{url_for('static', filename='discover.css')}}">
 </head>
 <body>
     <div class="main-container">
         <button class="back" onclick="history.back()"><b>🔙Back</b></button>
-        <!-- Display user's name if logged in -->
-        {% if current_user.is_authenticated %}
-            <p>Welcome, {{ current_user.username }}!</p>
-            <input type="hidden" id="userIdInput" name="user_id" value="{{ user_id }}">
-        {% else %}
-            <p>Please log in to submit a review.</p>
-        {% endif %}
 
         <!--Search Form-->
         <form onsubmit="searchMedia(); return false;">
@@ -32,6 +26,7 @@
             <span class="close" onclick="closeModal()">&times;</span> <!--Close button-->
 
             <h2 id="modalTitle"></h2>
+            <p id="release-date"></p>
             <p id="modalOverview"></p>
 
             <p id="genres"></p>
@@ -45,7 +40,6 @@
                 <input type="hidden" id="movieTitleInput" name="movie_title">
                 <input type="hidden" id="ratingInput" name="rating">
                 <input type="hidden" id="userIdInput" name="user_id" value="{{user_id}}">
-
 
                 <div class="rating">
                     <span class="star" data-value="1">★</span>
@@ -61,7 +55,7 @@
             </form>
 
             <!--Reviews Section-->
-            <h3>Your Reviews:</h3>
+            <h3>Your Review:</h3>
             <div id="reviewList"></div>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- ✅ Make sure it exists here -->
 

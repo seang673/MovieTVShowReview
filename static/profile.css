@@ -1,6 +1,8 @@
 body{
     justify-content:center;
     text-align:center;
+    background-color:rgb(91, 164, 141);
+    color:white;
 }
 
 #main-container{
@@ -8,9 +10,15 @@ body{
     justify-content:space-between;
     gap:5px;
 }
-h1, h2{
+h1, h2, h3{
     text-align:center;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.poster{
+    width: 100%;
+    max-width:150px;
+    height:auto;
+    border-radius:12px;
 }
 
 .saved-container, .reviews-container{
@@ -45,7 +53,37 @@ h1, h2{
     margin-bottom:5px;
 }
 .item, .review{
+    position: relative;
     padding: 10px;
-    margin:10px;
+    width:40%;
+    margin:0 auto;
+    margin-top:15px;
     border-radius: 5px;
+    border:12px;
+    background-color:rgb(88, 85, 85);
 }
+@media (max-width: 600px){
+    .poster{
+        max-width:90px;
+    }
+}
+
+.delete-form{
+    position:absolute;
+    top:4px;
+    right:4px;
+}
+
+.delete-btn {
+    background: transparent;
+    border: none;
+    color: red;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    color: darkred;
+}
+
+

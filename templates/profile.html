@@ -15,6 +15,10 @@
             <h2>Your Reviews</h2>
             {% for review in reviews %}
                 <div class="review">
+                    <form action="{{ url_for('delete_review', review_id=review.id)}}" method="POST" style="display:inline;" class="delete-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="delete-btn">❌</button>
+                    </form>
                     <strong>{{review.movie_title}}</strong><br>
                     <div class="stars">
                         {% for i in range(1,6)%}
@@ -34,8 +38,12 @@
             <h2>Your Saved Movies and Shows</h2>
             {% for media in saved %}
                 <div class="item">
-                    <strong>{{ media.title }} ({{ media.release_date.split('-')[0] }})</strong><br>
-                    <img src="{{media.poster_url}}" width="50px" height="75px">
+                    <form action="{{ url_for('delete_saved_media', media_id=media.id) }}" method="POST" style="display:inline;" class="delete-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="delete-btn">❌</button>
+                    </form>
+                    <h3><strong>{{ media.title }} ({{ media.release_date.split('-')[0] }})</strong></h3><br>
+                    <img src="{{media.poster_url}}" class="poster">
                 </div>
             {% endfor %}
         </div>

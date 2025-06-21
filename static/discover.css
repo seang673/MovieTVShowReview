@@ -125,6 +125,13 @@ button:hover{
     gap: 10px;
 }
 
+.review-item{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    border-radius:9px;
+}
+
 .close{
     position: absolute;
     right: 8px;

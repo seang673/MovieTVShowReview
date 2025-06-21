@@ -92,19 +92,15 @@ async function openModal(mediaId, mediaTitle, mediaType){
         }
         const data = await response.json();
 
-        let releaseYear = mediaType === "movie" ?
-        (data.release_date ? data.release_date.split("-")[0] : "N/A") :
-        (data.first_air_date ? data.first_air_date.split("-")[0] : "N/A");
-
-        const genres = data.genres.map(genre => genre.name).join(", ");
-
-        document.getElementById("modalTitle").innerText = `${mediaTitle} (${releaseYear})`;
-        document.getElementById("modalOverview").innerText = data.overview || "(No overview available)";
-
         let releaseDate = mediaType === "movie" ?
         (data.release_date ? data.release_date : "N/A") :
         (data.first_air_date ? data.first_air_date : "N/A");
 
+        const genres = data.genres.map(genre => genre.name).join(", ");
+
+        document.getElementById("modalTitle").innerText = `${mediaTitle}`;
+        document.getElementById("release-date").innerText = `Release Date: ${releaseDate}`;
+        document.getElementById("modalOverview").innerText = data.overview || "(No overview available)";
 
         document.getElementById("movieIdInput").value = mediaId;  // ✅ Store movie ID in hidden field
         document.getElementById("movieTitleInput").value = mediaTitle;  // ✅ Store movie title in hidden field
@@ -171,8 +167,27 @@ async function saveMedia(){
     const mediaId = document.getElementById("modalTitle").getAttribute("data-id");
     const mediaTitle = document.getElementById("modalTitle").innerText;
     const mediaType = document.getElementById("modalTitle").getAttribute("data-type");
-    const releaseDateElement = document.getElementById("releaseDate");
-    const releaseDate = releaseDateElement ? releaseDateElement.textContent.replace("Release Date: ", "").trim() : null;
+
+    const apiKey = "462908883a54600a4f35c65fdb0475cc";
+    let apiUrl;
+    if (mediaType === "movie")
+    {
+        apiUrl = `https://api.themoviedb.org/3/movie/${mediaId}?api_key=${apiKey}`;
+    } else if (mediaType === "tv"){
+        apiUrl = `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}`;
+    } else {
+        console.error("Invalid media type")
+        return;
+    }
+    const response = await fetch(apiUrl);
+        if (!response.ok){
+            throw new Error("Failed to fetch media details");
+        }
+        const data = await response.json();
+
+    const releaseDate = mediaType === "movie" ?
+        (data.release_date ? data.release_date : "N/A") :
+        (data.first_air_date ? data.first_air_date : "N/A");
     const posterUrl = document.querySelector(".media-card img").src;
 
      const payload = {
@@ -302,48 +317,38 @@ async function submitReview() {
         const resultText = await response.text();
         console.log("Raw Response:", resultText);
 
+        let result;
         try {
-            const result = JSON.parse(resultText);
-            alert(result.message || "Error occurred");
+            result = JSON.parse(resultText);
+        } catch(error){
+            console.error("Error parsing JSON response:", error);
+            alert("Failed to submit review.");
+            return; // Exit early if parsing fails
+        }
+        alert(result.message || "Error occurred");
+
+        if (result.success) {
+            let starsHTML = "";
+            for (let i = 1; i <= 5; i++) {
+                starsHTML += i <= result.rating
+                ? `<i class="fa-solid fa-star" style="color: gold;"></i>`
+                : `<i class="fa-regular fa-star" style="color: gold;"></i>`;
+            }
+
+            document.getElementById("reviewList").innerHTML += `
+                <div class="review-item">
+                    <div class="stars">${starsHTML}</div><br>
+                    <p>${result.review_text}</p>
+                </div>
+            `;
+
+            document.getElementById("reviewText").value = "";
+        }
         } catch (error) {
             console.error("Error parsing JSON response:", error);
             alert("Failed to submit review.");
         }
-    } catch (error) {
-        console.error("Fetch Error:", error);
     }
-}
-
-document.querySelector("#reviewForm").addEventListener("submit", async function(event) {
-    event.preventDefault(); // ✅ Prevent full page reload
-
-    let formData = new FormData(this);
-
-    try {
-        const response = await fetch("/submit_review", {
-            method: "POST",
-            body: formData
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            // ✅ Append new review dynamically inside reviewList
-            document.getElementById("reviewList").innerHTML += `
-                <div class="review-item">
-                    <strong>${data.movie_title}</strong>
-                    <p>${data.review_text}</p>
-                </div>
-            `;
-            document.getElementById("reviewText").value = ""; // ✅ Clear textarea after submitting
-        } else {
-            alert("Error: " + data.error);
-        }
-
-    } catch(error) {
-        console.error("Error:", error);
-    }
-});
 
 
 document.querySelector("form").addEventListener("submit", function(event) {
