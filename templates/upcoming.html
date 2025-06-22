@@ -22,6 +22,7 @@
             <p id="genres"></p>
             <p id="cast"></p>
             <div id="trailerContainer"></div>
+            <input type="hidden" id="posterUrlInput" name="poster_url">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- ✅ Make sure it exists here -->
             <button type="button" class="btn" onclick="saveMedia()">Save To List</button>
 

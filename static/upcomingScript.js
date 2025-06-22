@@ -30,17 +30,22 @@ async function fetchMedia(){
 
                 const mediaCard = document.createElement("div");
                 mediaCard.className = "media-card";
-                yr = releaseDate.split('-')[0]
+                const yr = releaseDate.split('-')[0]
                 mediaCard.innerHTML = `
                     <img src="https://image.tmdb.org/t/p/w500${media.poster_path}" alt="${media.title || media.name}">
                     <h2>${media.title || media.name} (${yr}) </h2>
-
                 `;
-                const type = media.release_date ? "movie" : "tv";
-                mediaCard.onclick = () => openModal(media.id, media.title || media.name, type);
+                mediaCard.addEventListener("click", function() {
+                    const posterUrl = this.querySelector("img").src;
+                    const type = media.release_date ? "movie" : "tv";
+
+                    document.getElementById("posterUrlInput").value = posterUrl;
+                    openModal(media.id, media.title || media.name, type);
+
+                    }
+                );
+
                 mediaContainer.appendChild(mediaCard);
-
-
         });
     } catch (error) {
         console.error("Error fetching media:", error);
@@ -127,14 +132,14 @@ async function saveMedia(){
     const mediaType = document.getElementById("modalTitle").getAttribute("data-type");
     const releaseDateElement = document.getElementById("releaseDate");
     const releaseDate = releaseDateElement ? releaseDateElement.textContent.replace("Release Date: ", "").trim() : null;
-    const posterUrl = document.querySelector(".media-card img").src;
+    const theposterUrl = document.getElementById("posterUrlInput").value;
 
      const payload = {
         media_id: mediaId,
         title: mediaTitle,
         media_type: mediaType,
         release_date: releaseDate,
-        poster_url: posterUrl,
+        poster_url: theposterUrl,
         csrf_token: csrfToken
     };
 

@@ -48,23 +48,43 @@ function displayResults(movies, tvShows){
     let tvList = document.getElementById("tv-list");
 
     movies.forEach(movie => {
-        let movieCard = `
-            <div class="media-card" onclick="openModal('${movie.id}', '${movie.title}', 'movie')">
+        const movieCard = document.createElement("div");
+        movieCard.className = "media-card";
+        const year = movie.release_date ? movie.release_date.split('-')[0]: "N/A";
+
+        movieCard.innerHTML = `
                 <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" width="100%">
-                <h3>${movie.title} (${movie.release_date ? movie.release_date.split('-')[0] : "N/A"})</h3>
-            </div>
+                <h3>${movie.title} (${year})</h3>
         `;
-        moviesList.innerHTML += movieCard;
+        movieCard.addEventListener("click", function() {
+                    const posterUrl = this.querySelector("img").src;
+                    const type = "movie";
+
+                    document.getElementById("posterUrlInput").value = posterUrl;
+                    openModal(movie.id, movie.title, type);
+                    }
+                );
+        moviesList.appendChild(movieCard);
     });
 
     tvShows.forEach(show => {
-        let showCard = `
-            <div class="media-card" onclick="openModal('${show.id}', '${show.name}', 'tv')">
-                <img src="https://image.tmdb.org/t/p/w500${show.poster_path}" alt="${show.name}" width="100%">
-                <h3>${show.name} (${show.first_air_date ? show.first_air_date.split('-')[0] : "N/A"})</h3>
-            </div>
+        const showCard = document.createElement("div");
+        showCard.className = "show-card";
+        const year = show.first_air_date ? show.first_air_date.split('-')[0] : "N/A";
+
+        showCard.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w500${show.poster_path}" alt="${show.title}" width="100%">
+                <h3>${show.name} (${year})</h3>
         `;
-        tvList.innerHTML += showCard;
+        showCard.addEventListener("click", function() {
+                    const posterUrl = this.querySelector("img").src;
+                    const type = "tv";
+
+                    document.getElementById("posterUrlInput").value = posterUrl;
+                    openModal(show.id, show.name, type);
+                    }
+                );
+        tvList.appendChild(showCard);
         });
     }
     if (!movies.length && !tvShows.length) {
@@ -188,14 +208,14 @@ async function saveMedia(){
     const releaseDate = mediaType === "movie" ?
         (data.release_date ? data.release_date : "N/A") :
         (data.first_air_date ? data.first_air_date : "N/A");
-    const posterUrl = document.querySelector(".media-card img").src;
+    const theposterUrl = document.getElementById("posterUrlInput").value;
 
      const payload = {
         media_id: mediaId,
         title: mediaTitle,
         media_type: mediaType,
         release_date: releaseDate,
-        poster_url: posterUrl,
+        poster_url: theposterUrl,
         csrf_token: csrfToken
     };
 

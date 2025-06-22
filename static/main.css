@@ -7,11 +7,12 @@ body{
     background:linear-gradient(to bottom, #1A1A2E, #007BFF);
     background-attachment:fixed;
 }
-.main-container{
 
+.main-container{
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    flex-direction:column;
+    justify-content: center;
+    flex-wrap:wrap;
     align-items: center;
     gap: 1rem;
     width:300px;
@@ -30,6 +31,36 @@ body{
     margin-left:225px;
     margin-top:145px;
 }
+
+.x-container iframe {
+  width: 100%;
+  max-width: 400px;
+  height: 415px;
+  border: none;
+}
+
+@media (max-width: 974px) {
+
+    body {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem;
+  }
+
+  .main-container,
+  .x-container {
+    margin: 0 auto;
+    width: 90%;
+  }
+
+  .main-container button {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+}
+
+
 
 h1{
     color:white;

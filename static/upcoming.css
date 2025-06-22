@@ -23,6 +23,7 @@ body{
 
 .media-card img{
     width: 92%;
+    border-radius:11px;
 }
 
 .modal{

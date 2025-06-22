@@ -1,6 +1,7 @@
 body{
     display:flex;
     flex-direction:column;
+    justify-content:center;
     align-items:center;
     background:linear-gradient(to bottom, #007BFF ,#00FFFF ,#E4F3E3);
     background-attachment:fixed;
@@ -42,7 +43,11 @@ body{
     border-radius:9px;
     text-align:center;
     cursor:pointer;
-    width:95px;
+    width:185px;
+    transition:background-color 0.1s ease;
+}
+.btn:hover{
+    background-color:rgb(56, 55, 55);
 }
 
 .subButton {
