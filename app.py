@@ -346,8 +346,6 @@ def my_profile():
     saved = SavedMedia.query.filter_by(user_id=user_id).all()
     return render_template("profile.html", reviews=reviews, saved=saved)
 
-
-
 @app.route("/upcoming")
 def soonCome():
     return render_template("upcoming.html")
