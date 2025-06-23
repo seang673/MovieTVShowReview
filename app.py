@@ -191,7 +191,12 @@ def submit_review():
             db.session.add(new_review)
 
         db.session.commit()
-        return jsonify({"message": "Review submitted successfully!"}), 200
+        return jsonify({
+            "success": True,
+            "rating": rating_value,
+            "review_text": review_text,
+            "message": "Review submitted successfully!"
+}), 200
     except Exception as e:
         print("Error:", str(e))  # ✅ Logs full error in terminal
         return jsonify({"error": str(e)}), 500
@@ -203,13 +208,21 @@ def get_reviews(media_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT review_text FROM reviews WHERE media_id=%s ORDER BY created_at DESC", (media_id,))
-    reviews = cursor.fetchall()
+    cursor.execute("""
+        SELECT review_text, rating
+        FROM reviews
+        WHERE media_id = %s
+        ORDER BY created_at DESC
+    """, (media_id,))
+
+    rows = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
-    return jsonify({"reviews": [review[0] for review in reviews]})
+    reviews = [{"review_text": row[0], "rating": row[1]} for row in rows]
+
+    return jsonify({"reviews": reviews})
 
 import requests
 
@@ -277,7 +290,7 @@ def delete_review(review_id):
 
     db.session.delete(review)
     db.session.commit()
-    return redirect(url_for("profile"))  # or wherever you want to go next
+    return redirect(url_for("my_profile"))  # or wherever you want to go next
 
 @app.route("/delete_saved_media/<int:media_id>", methods=["POST"])
 def delete_saved_media(media_id):

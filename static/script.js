@@ -138,9 +138,18 @@ async function openModal(mediaId, mediaTitle, mediaType){
         reviewList.innerHTML = ""; // ✅ Clear previous reviews
 
         reviewsData.reviews.forEach(review => {
+            let starsHTML = "";
+            for (let i = 1; i <= 5; i++) {
+                starsHTML += i <= review.rating
+                    ? `<i class="fa-solid fa-star" style="color: gold;"></i>`
+                    : `<i class="fa-regular fa-star" style="color: gold;"></i>`;
+            }
+
             let reviewItem = document.createElement("div");
             reviewItem.className = "review-item";
-            reviewItem.innerHTML = `<p>${review}</p>`;
+            reviewItem.innerHTML = `
+            <div class="stars">${starsHTML}</div>
+            <p>${review.review_text}</p>`;
             reviewList.appendChild(reviewItem);
         });
 
@@ -278,6 +287,7 @@ document.querySelectorAll(".star").forEach(star => {
 
         // ✅ Store rating inside hidden input
         document.getElementById("ratingInput").value = rating;
+        alert("You have selected rating:", rating);
 
         console.log("Selected Rating:", rating); // ✅ Debugging step
     });
@@ -334,18 +344,11 @@ async function submitReview() {
             body: JSON.stringify(payload)
         });
 
-        const resultText = await response.text();
-        console.log("Raw Response:", resultText);
+        const result = await response.json();
+        console.log("Parsed result:", result);
 
-        let result;
-        try {
-            result = JSON.parse(resultText);
-        } catch(error){
-            console.error("Error parsing JSON response:", error);
-            alert("Failed to submit review.");
-            return; // Exit early if parsing fails
-        }
         alert(result.message || "Error occurred");
+
 
         if (result.success) {
             let starsHTML = "";
@@ -355,12 +358,13 @@ async function submitReview() {
                 : `<i class="fa-regular fa-star" style="color: gold;"></i>`;
             }
 
-            document.getElementById("reviewList").innerHTML += `
-                <div class="review-item">
-                    <div class="stars">${starsHTML}</div><br>
-                    <p>${result.review_text}</p>
-                </div>
-            `;
+            const reviewList = document.getElementById("reviewList");
+            const reviewItem = document.createElement("div");
+            reviewItem.className = "review-item";
+            reviewItem.innerHTML =
+                `<div class="stars">${starsHTML}</div><br>
+                <p>${result.review_text}</p>`;
+            reviewList.appendChild(reviewItem);
 
             document.getElementById("reviewText").value = "";
         }
@@ -369,20 +373,6 @@ async function submitReview() {
             alert("Failed to submit review.");
         }
     }
-
-
-document.querySelector("form").addEventListener("submit", function(event) {
-    let csrfToken = document.querySelector("input[name='csrf_token']").value;
-    if (!csrfToken) {
-        alert("CSRF token is missing!");
-        event.preventDefault();  // ✅ Prevent submission if token is missing
-    }
-});
-
-document.querySelector("button[type='submit']").addEventListener("click", function(event) {
-    console.log("Submit button clicked!");
-});
-
 
 function closeModal() {
     document.getElementById("movieModal").style.display = "none";

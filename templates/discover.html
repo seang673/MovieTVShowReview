@@ -26,40 +26,41 @@
             <span class="close" onclick="closeModal()">&times;</span> <!--Close button-->
             <input type="hidden" id="posterUrlInput" name="poster_url">
 
-            <h2 id="modalTitle"></h2>
-            <p id="release-date"></p>
-            <p id="modalOverview"></p>
+            <div class="modal-body">
+                <h2 id="modalTitle"></h2>
+                <p id="release-date"></p>
+                <p id="modalOverview"></p>
 
-            <p id="genres"></p>
-            <button type="button" class="btn" onclick="saveMedia()">Save To List</button>
+                <p id="genres"></p>
+                <button type="button" class="btn" onclick="saveMedia()">Save To List</button>
 
-            <!--Review Submission-->
-            <h3>Leave a Review:</h3>
-            <form id="reviewForm">
-                <input type="hidden" id="csrfToken" value="{{ csrf_token() }}"> <!--Protects and CSRF attacks-->
-                <input type="hidden" id="movieIdInput" name="movie_id">
-                <input type="hidden" id="movieTitleInput" name="movie_title">
-                <input type="hidden" id="ratingInput" name="rating">
-                <input type="hidden" id="userIdInput" name="user_id" value="{{user_id}}">
+                <!--Review Submission-->
+                <h3>Leave a Review:</h3>
+                <form id="reviewForm">
+                    <input type="hidden" id="csrfToken" value="{{ csrf_token() }}"> <!--Protects and CSRF attacks-->
+                    <input type="hidden" id="movieIdInput" name="movie_id">
+                    <input type="hidden" id="movieTitleInput" name="movie_title">
+                    <input type="hidden" id="ratingInput" name="rating">
+                    <input type="hidden" id="userIdInput" name="user_id" value="{{user_id}}">
 
-                <div class="rating">
-                    <span class="star" data-value="1">★</span>
-                    <span class="star" data-value="2">★</span>
-                    <span class="star" data-value="3">★</span>
-                    <span class="star" data-value="4">★</span>
-                    <span class="star" data-value="5">★</span>
-                </div>
-                <div class = "review-container">
-                    <textarea name="review_text" id="reviewText" placeholder="Write your review here..."></textarea>
-                    <button type="button" onclick="submitReview()">Submit Review</button>
-                </div>
-            </form>
+                    <div class="rating">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                    <div class = "review-container">
+                        <textarea name="review_text" id="reviewText" placeholder="Write your review here..."></textarea>
+                        <button type="button" onclick="submitReview()">Submit Review</button>
+                    </div>
+                </form>
 
-            <!--Reviews Section-->
-            <h3>Your Review:</h3>
-            <div id="reviewList"></div>
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- ✅ Make sure it exists here -->
-
+                <!--Reviews Section-->
+                <h3>Your Review:</h3>
+                <div id="reviewList"></div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- ✅ Make sure it exists here -->
+            </div>
         </div>
     </div>
 
