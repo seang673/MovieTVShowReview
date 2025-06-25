@@ -87,11 +87,7 @@ class SavedMedia(db.Model):
 
 def get_db_connection():
     return psycopg2.connect(
-        dbname="movie_review_platform",
-        user="postgres",
-        password="CrazySMG19!",
-        host="localhost",
-        port="5432"
+        os.environ["DATABASE_URL"]
     )
 
 #Signup Route
@@ -306,8 +302,6 @@ def delete_saved_media(media_id):
     db.session.delete(media)
     db.session.commit()
     return redirect(url_for("my_profile"))
-
-
 
 #Ensures the database connection closes properly
 @app.teardown_appcontext
