@@ -15,7 +15,7 @@ DB_PORT = "5432"
 #Establish connection
 
 conn = psycopg2.connect(
-    os.environ["DATABASE_URL"]
+    os.getenv("DATABASE_URL")
 )
 
 # Create a cursor to execute SQL queries
