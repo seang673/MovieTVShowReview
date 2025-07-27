@@ -1,7 +1,7 @@
 body{
     font-family: Arial, sans-serif;
     text-align:center;
-    background-color:rgb(176, 140, 86);
+    background-color:rgb(19, 103, 111);
     color: white;
 }
 
@@ -59,7 +59,13 @@ body{
     color:white;
     border-radius:12px;
     cursor:pointer;
+    transition: all 0.1s ease-in-out;
 }
+
+.btn:hover{
+    background-color:rgb(53,52,52);
+}
+
 .back{
     position:absolute;
     left: 20px;

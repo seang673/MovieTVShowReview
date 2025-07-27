@@ -125,7 +125,7 @@ async function openModal(mediaId, mediaTitle, mediaType){
         document.getElementById("movieIdInput").value = mediaId;  // ✅ Store movie ID in hidden field
         document.getElementById("movieTitleInput").value = mediaTitle;  // ✅ Store movie title in hidden field
 
-        document.getElementById("genres").innerText = ("G͟e͟n͟r͟e͟s͟: " + genres) || "Genres: (Unavailable)"
+        document.getElementById("genres").innerText = ("G͟e͟n͟r͟e͟s͟: " + genres) || "Genres: (Unavailable)";
         document.getElementById("movieModal").style.display = "block";
         document.getElementById("modalTitle").setAttribute("data-id", mediaId);
         document.getElementById("modalTitle").setAttribute("data-type", mediaType);

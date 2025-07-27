@@ -5,7 +5,15 @@ body{
     justify-content: center;
     align-items:center;
     background:linear-gradient(to bottom, #1A1A2E, #007BFF);
+    background-size: 200% 200%;
     background-attachment:fixed;
+    animation: scrollGradient 8s ease infinite;
+}
+
+@keyframes scrollGradient{
+    0% { background-position: 0% 0%;}
+    50% { background-position: 1000% 100%; }
+    100% { background-position: 0% 0%; }
 }
 
 .main-container{
@@ -59,8 +67,6 @@ body{
   }
 
 }
-
-
 
 h1{
     color:white;

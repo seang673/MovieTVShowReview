@@ -62,6 +62,11 @@ button:hover{
     color:white;
     border-radius:12px;
     cursor:pointer;
+    transition: all 0.1s ease-in-out;
+}
+
+.btn:hover{
+    background-color:rgb(53,52,52);
 }
 
 @media screen and (max-width: 600px){

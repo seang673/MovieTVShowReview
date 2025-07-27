@@ -1,10 +1,23 @@
+html, body{
+    height:80%;
+    margin:0;
+}
+
 body{
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
     background:linear-gradient(to bottom, #007BFF ,#00FFFF ,#E4F3E3);
+    background-size: 200% 200%;
     background-attachment:fixed;
+    animation: scrollGradient 8s ease infinite;
+}
+
+@keyframes scrollGradient{
+    0% { background-position: 0% 0%;}
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
 }
 
 .auth-container{
