@@ -4,7 +4,7 @@ body{
     gap:8rem;
     justify-content: center;
     align-items:center;
-    background:linear-gradient(to bottom, #1A1A2E, #007BFF);
+    background:linear-gradient(to bottom, #1A1A2E, #7ac2e1);
     background-size: 200% 200%;
     background-attachment:fixed;
     animation: scrollGradient 8s ease infinite;
@@ -33,7 +33,7 @@ body{
     align-items:center;
     justify-content: center;;
     padding:10px;
-    background-color:rgb(18, 18, 84);
+    background-color:rgb(93, 93, 195);
     border-radius:13px;
     width:300px;
     margin-left:225px;
