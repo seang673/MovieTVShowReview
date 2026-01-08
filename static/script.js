@@ -117,6 +117,8 @@ async function openModal(mediaId, mediaTitle, mediaType){
         (data.first_air_date ? data.first_air_date : "N/A");
 
         const genres = data.genres.map(genre => genre.name).join(", ");
+        const runtime = data.runtime;
+        const rating = data.vote_average;
 
         document.getElementById("modalTitle").innerText = `${mediaTitle}`;
         document.getElementById("release-date").innerText = `Release Date: ${releaseDate}`;
@@ -126,6 +128,18 @@ async function openModal(mediaId, mediaTitle, mediaType){
         document.getElementById("movieTitleInput").value = mediaTitle;  // ✅ Store movie title in hidden field
 
         document.getElementById("genres").innerText = ("G͟e͟n͟r͟e͟s͟: " + genres) || "Genres: (Unavailable)";
+        const runtimeElement = document.getElementById("runtime");
+
+        if (runtime && typeof runtime === "number") {
+            // Movie → show runtime
+            runtimeElement.style.display = "block";
+            runtimeElement.innerText = `Runtime: ${runtime} minutes`;
+        } else {
+            // TV show → hide runtime entirely
+            runtimeElement.style.display = "none";
+        }
+        document.getElementById("rating").innerText = ("Popularity Rating: " + rating) || "Rating: (Unavailable)";
+
         document.getElementById("movieModal").style.display = "block";
         document.getElementById("modalTitle").setAttribute("data-id", mediaId);
         document.getElementById("modalTitle").setAttribute("data-type", mediaType);

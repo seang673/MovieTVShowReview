@@ -89,7 +89,16 @@ button:hover{
 }
 
 .media-card {
-    background: #767272;
+    background: #918e8ec3;
+    padding: 20px;
+    border-radius:8px;
+    text-align: left;
+    margin-bottom:10px;
+    cursor: pointer;
+}
+
+.show-card {
+    background: #918e8ec3;
     padding: 20px;
     border-radius:8px;
     text-align: left;
