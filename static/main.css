@@ -57,7 +57,7 @@ body{
 
   .main-container,
   .x-container {
-    margin: 0 auto;
+    margin: 10px auto 0;
     width: 90%;
   }
 

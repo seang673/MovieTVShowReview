@@ -8,26 +8,29 @@
 </head>
 <body>
     <button class="back" onClick="history.back()"><b>🔙Back</b></button>
-    <h1> Upcoming Movies and TV Shows!📽️</h1>
-    <div id="mediaContainer"></div>
+    <div class="upcoming-container">
+        <h1> Upcoming Movies and TV Shows!📽️</h1>
+        <div id="mediaContainer">
+            <div id ="mediaModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2 id="modalTitle"></h2>
+                    <p id="modalOverview"></p>
+                    <p id="releaseDate"></p>
+                    <p id="countdown"></p>
+                    <p id="genres"></p>
+                    <p id="cast"></p>
+                    <div id="trailerContainer"></div>
+                    <input type="hidden" id="posterUrlInput" name="poster_url">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- ✅ Make sure it exists here -->
+                    <button type="button" class="btn" onclick="saveMedia()">Save To List</button>
 
-
-    <div id ="mediaModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 id="modalTitle"></h2>
-            <p id="modalOverview"></p>
-            <p id="releaseDate"></p>
-            <p id="countdown"></p>
-            <p id="genres"></p>
-            <p id="cast"></p>
-            <div id="trailerContainer"></div>
-            <input type="hidden" id="posterUrlInput" name="poster_url">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- ✅ Make sure it exists here -->
-            <button type="button" class="btn" onclick="saveMedia()">Save To List</button>
+                </div>
+            </div>
 
         </div>
     </div>
+
     <script src="{{ url_for('static', filename='upcomingScript.js') }}"></script>
 
 </body>

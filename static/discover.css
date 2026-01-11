@@ -74,6 +74,10 @@ button:hover{
         padding: 10px 15px;
         font-size:14px;
     }
+    .search-form{
+        margin: 10px auto 0;
+        width: 90%;
+    }
 }
 
 #results{

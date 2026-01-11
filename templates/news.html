@@ -8,18 +8,20 @@
 </head>
 <body>
     <button class="back" onclick="history.back()"><b>🔙Back</b></button>
-    <h1> Movie & TV News🍿</h1>
-    <div id="news-container">
-        <div class="movie-news">
-            <h2>Movie News and Articles</h2>
-            <div id="movieNews"></div>
+    <div class="main-container">
+        <h1> Movie & TV News🍿</h1>
+        <div id="news-container">
+            <div class="movie-news">
+                <h2>Movie News and Articles</h2>
+                <div id="movieNews"></div>
+            </div>
+            <div class="shows-news">
+                <h2>TV Show News and Articles</h2>
+                <div id="showsNews"></div>
+            </div>
         </div>
-        <div class="shows-news">
-            <h2>TV Show News and Articles</h2>
-            <div id="showsNews"></div>
-        </div>
-
     </div>
+
     <script src="{{ url_for('static', filename='newsScript.js') }}"></script>
 </body>
 
