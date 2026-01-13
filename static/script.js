@@ -118,7 +118,9 @@ async function openModal(mediaId, mediaTitle, mediaType){
 
         const genres = data.genres.map(genre => genre.name).join(", ");
         const runtime = data.runtime;
-        const rating = data.vote_average;
+
+        const rating = String(data.vote_average);
+        rating = rating.substring(0, 3); // Limit to 3 characters
 
         document.getElementById("modalTitle").innerText = `${mediaTitle}`;
         document.getElementById("release-date").innerText = `Release Date: ${releaseDate}`;
