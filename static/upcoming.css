@@ -81,10 +81,10 @@ body{
     transition: background-color 0.3s ease-in-out;
 }
 
-@media screen and (max-width: 600px){
+@media screen and (max-width: 750px){
     
     .upcoming-container{
-        margin: 25px auto 0;
+        margin: 45px auto 0;
         width: 90%;
     }
 

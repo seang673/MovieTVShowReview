@@ -59,10 +59,10 @@ h3{
     cursor:pointer;
     transition: background-color 0.3s ease-in-out;
 }
-@media screen and (max-width: 600px){
+@media screen and (max-width: 700px){
     
     .main-container{
-        margin: 20px auto 0;
+        margin: 25px auto 0;
         width: 90%;
     }
 }
