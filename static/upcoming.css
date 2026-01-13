@@ -84,7 +84,25 @@ body{
 @media screen and (max-width: 600px){
     
     .upcoming-container{
-        margin: 10px auto 0;
+        margin: 25px auto 0;
         width: 90%;
     }
+
+    .modal{
+        display: none;
+        position: fixed;
+        left:50%;
+        top:50%;
+        width:400px;
+        max-width:90%;
+        box-sizing:border-box;
+        transform: translate(-50%, -50%);
+        height: auto;
+        max-height:90vh;
+        overflow-y:auto;
+        padding: 20px;
+        background-color:rgb(121, 138, 195);
+        border-radius: 10px;
+    }
+
 }

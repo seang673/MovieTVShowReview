@@ -62,7 +62,7 @@ h3{
 @media screen and (max-width: 600px){
     
     .main-container{
-        margin: 10px auto 0;
+        margin: 20px auto 0;
         width: 90%;
     }
 }
