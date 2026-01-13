@@ -96,19 +96,13 @@ button:hover{
     }
 
   .modal{
-        display: none;
-        position: fixed;
-        left:50%;
-        top:50%;
-        transform: translate(-50%, -50%);
-        width:400px;
-        min-width:94%;
-        max-height: 95vh;
-        background-color:rgb(121, 138, 195);
-        border-radius: 10px;
-        overflow: hidden; /* prevent scrollbars on the modal itself */
-        z-index: 1000;
-        box-sizing: border-box;}
+        width: 95%;          /* nearly full width */
+        max-width: 95%;      /* prevents horizontal overflow */
+        max-height: 85vh;    /* avoids vertical overflow */
+        border-radius: 8px;
+        padding: 0.75rem;
+
+    }
 }
 
 
