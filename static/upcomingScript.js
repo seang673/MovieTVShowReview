@@ -35,7 +35,7 @@ async function fetchMedia(){
                     <img src="https://image.tmdb.org/t/p/w500${media.poster_path}" alt="${media.title || media.name}">
                     <h2>${media.title || media.name} (${yr}) </h2>
                 `;
-                mediaCard.addEventListener("click", function() {
+                mediaCard.addEventListener("click", function(){
                     const posterUrl = this.querySelector("img").src;
                     const type = media.release_date ? "movie" : "tv";
 
@@ -83,7 +83,7 @@ async function openModal(mediaId, mediaTitle, mediaType) {
         setInterval(() => {
             document.querySelectorAll(".countdown").forEach(element => {
                 const releaseDate = element.getAttribute("data-release");
-                element.innterText = getCountdown(releaseDate);
+                element.innerText = getCountdown(releaseDate);
             });
         }, 60000); //Updates every 60 seconds
 
