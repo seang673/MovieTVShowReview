@@ -22,7 +22,7 @@ A full‑stack Flask application that lets users explore movies and TV shows, re
 
 ##  🌐 API Usage
 ### TMDB
-Used for:
+- Used for:
   - Movie metadata
   - TV metadata
   - Images
@@ -30,7 +30,7 @@ Used for:
   - Search endpoints
 
 ### NewsAPI
-Used for:
+- Used for:
   - Entertainment news
   - Movie/TV industry headlines
 ---
