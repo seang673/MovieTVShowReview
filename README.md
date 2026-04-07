@@ -48,5 +48,3 @@ For major changes, please open an issue first to discuss what you’d like to mo
 - https://movieshowsplat.com
 ---
 
- look.
-
