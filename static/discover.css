@@ -188,27 +188,21 @@ button:hover{
     border-radius:5px;
 }
 
-.rating, .star {
-    gap: 5px;
-    padding-bottom: 5px;
-    justify-content: center;
-    cursor:pointer;
-    transition: transform 0.2s ease, color 0.2s ease;
+.rating {
+    display: flex;
+    gap: 6px;
+    padding-bottom: 6px;
 }
 
-.rating .star:hover{
-    transform:scale(1.3);
-    color:gold;
-}
-.rating span {
+.star {
     font-size: 29px;
+    color: #aaa;
     cursor: pointer;
-    color: gray;
-    transition: color 0.2s ease-in-out;
+    user-select: none;
+    transition: color 0.12s ease, transform 0.12s ease;
 }
 
-/* ✅ Keeps clicked stars highlighted permanently */
-.selected {
+.star.selected {
     color: gold;
 }
 

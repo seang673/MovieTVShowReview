@@ -141,6 +141,7 @@ async function openModal(mediaId, mediaTitle, mediaType){
         }
         document.getElementById("rating").innerText = ("Popularity Rating: " + rating) || "Rating: (Unavailable)";
 
+        resetStars();
         document.getElementById("movieModal").style.display = "block";
         document.getElementById("modalTitle").setAttribute("data-id", mediaId);
         document.getElementById("modalTitle").setAttribute("data-type", mediaType);
@@ -168,33 +169,6 @@ async function openModal(mediaId, mediaTitle, mediaType){
             reviewList.appendChild(reviewItem);
         });
 
-        document.getElementById("movieModal").style.display = "block";
-
-        // ✅ Debug: Ensure stars exist when modal opens
-        console.log("Stars Found After Modal Opens:", document.querySelectorAll(".star").length);
-
-        // ✅ Event delegation: Attach listener after modal opens
-        document.getElementById("reviewForm").addEventListener("click", function(event) {
-            if (event.target.classList.contains("star")) {
-                const rating = event.target.getAttribute("data-value");
-
-                // Remove 'selected' class from all stars
-                document.querySelectorAll(".star").forEach(s => s.classList.remove("selected"));
-
-                // Highlight clicked star and all previous stars
-                event.target.classList.add("selected");
-                let prevSibling = event.target.previousElementSibling;
-                while (prevSibling) {
-                    prevSibling.classList.add("selected");
-                    prevSibling = prevSibling.previousElementSibling;
-                }
-
-                // ✅ Store rating in hidden input
-                document.getElementById("ratingInput").value = rating;
-
-                console.log("Selected Rating:", rating);  // ✅ Debugging step
-            }
-        });
         } catch (error) {
             console.error("Error fetching media details:", error);
         }
@@ -289,30 +263,47 @@ function rateMovie(movieId, rating) {
     .catch(error => console.error("Fetch error:", error));
 }
 
-document.querySelectorAll(".star").forEach(star => {
-    star.addEventListener("click", function() {
-        const rating = this.getAttribute("data-value");
-
-        // ✅ Remove 'selected' class from all stars
-        document.querySelectorAll(".star").forEach(s => s.classList.remove("selected"));
-
-        // ✅ Add 'selected' class to clicked star and all previous stars
-        this.classList.add("selected");
-        this.previousElementSibling?.classList.add("selected");
-
-        // ✅ Store rating inside hidden input
-        document.getElementById("ratingInput").value = rating;
-        alert("You have selected rating:", rating);
-
-        console.log("Selected Rating:", rating); // ✅ Debugging step
+function resetStars() {
+    document.querySelectorAll('.star').forEach(s => {
+        s.classList.remove('selected');
+        s.style.color = '';
     });
-});
+    document.getElementById('ratingInput').value = '';
+}
 
-document.querySelectorAll(".star").forEach(star => {
-    star.addEventListener("click", function(event) {
-        console.log("Star clicked:", event.target.getAttribute("data-value"));
+function initStars() {
+    const stars = Array.from(document.querySelectorAll('.star'));
+    const ratingDiv = document.querySelector('.rating');
+
+    stars.forEach((star, idx) => {
+        // Hover: fill stars 1 through hovered star
+        star.addEventListener('mouseenter', () => {
+            stars.forEach((s, i) => {
+                s.style.color = i <= idx ? 'gold' : '#aaa';
+            });
+        });
+
+        // Click: lock in selection and store value
+        star.addEventListener('click', () => {
+            const val = idx + 1;
+            document.getElementById('ratingInput').value = val;
+            stars.forEach((s, i) => {
+                s.classList.toggle('selected', i < val);
+                s.style.color = i < val ? 'gold' : '#aaa';
+            });
+        });
     });
-});
+
+    // Mouse leaves the star row: revert to the locked selection
+    ratingDiv.addEventListener('mouseleave', () => {
+        const val = parseInt(document.getElementById('ratingInput').value) || 0;
+        stars.forEach((s, i) => {
+            s.style.color = i < val ? 'gold' : '';
+        });
+    });
+}
+
+initStars();
 
 
 async function submitReview() {
@@ -382,6 +373,7 @@ async function submitReview() {
             reviewList.appendChild(reviewItem);
 
             document.getElementById("reviewText").value = "";
+            resetStars();
         }
         } catch (error) {
             console.error("Error parsing JSON response:", error);
