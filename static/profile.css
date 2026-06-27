@@ -1,160 +1,89 @@
-*, *::before, *::after {
-    box-sizing: border-box;
+body{
+    justify-content:center;
+    text-align:center;
+    background-color:rgb(153, 201, 185);
+    color:white;
 }
 
-body {
-    background-color: rgb(118, 178, 160);
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-    min-height: 100vh;
-    padding: 60px 16px 36px;
+#main-container{
+    display:flex;
+    justify-content:space-between;
+    gap:5px;
 }
-
-h1 {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 1.9rem;
-    margin: 0 0 1.25rem;
+h1, h2, h3{
+    text-align:center;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
-
-h2 {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 1.15rem;
-    margin: 0 0 1rem;
-}
-
-h3 {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 0.95rem;
-    margin: 0 0 4px;
-}
-
-/* ── Two-column layout ── */
-#main-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 2rem;
-    flex-wrap: wrap;
-}
-
-.reviews-container,
-.saved-container {
-    flex: 1;
-    min-width: 260px;
-    max-width: 400px;
-    padding: 20px 18px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 14px;
-}
-
-/* ── Cards ── */
-.item,
-.review {
-    position: relative;
-    padding: 14px 16px;
-    margin: 0 auto 12px;
-    border-radius: 10px;
-    background-color: rgb(68, 65, 65);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
-    text-align: left;
-}
-
-.review p,
-.item p {
-    margin: 6px 0 0;
-    font-size: 0.88rem;
-    line-height: 1.5;
-}
-
-.review small {
-    font-size: 0.76rem;
-    color: rgba(255, 255, 255, 0.6);
-    display: block;
-    margin-top: 6px;
-}
-
-/* ── Poster ── */
-.poster {
+.poster{
     width: 100%;
-    max-width: 130px;
-    height: auto;
-    border-radius: 10px;
-    margin-top: 8px;
-    display: block;
+    max-width:150px;
+    height:auto;
+    border-radius:12px;
 }
 
-/* ── Stars ── */
-.stars {
-    display: inline-flex;
-    gap: 2px;
-    margin-bottom: 5px;
+.saved-container, .reviews-container{
+    width:35%;
+    padding:15px;
+    gap:2rem;
+    margin-right:8px;
+    margin-left:8px;
+    border-radius: 12px;
 }
 
-/* ── Delete button ── */
-.delete-form {
-    position: absolute;
-    top: 6px;
-    right: 6px;
+.back{
+    position:absolute;
+    left: 20px;
+    width:75px;
+    top:10px;
+    background:rgb(90, 90, 90);
+    color:white;
+    text-align:center;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor:pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.back:hover{
+    background:rgb(43, 43, 43)
+}
+
+.stars{
+    display: inline-block;
+    margin-bottom:5px;
+}
+.item, .review{
+    position: relative;
+    padding: 10px;
+    width:40%;
+    margin:0 auto;
+    margin-top:15px;
+    border-radius: 5px;
+    border:12px;
+    background-color:rgb(88, 85, 85);
+}
+@media (max-width: 600px){
+    .poster{
+        max-width:90px;
+    }
+}
+
+.delete-form{
+    position:absolute;
+    top:4px;
+    right:4px;
 }
 
 .delete-btn {
     background: transparent;
     border: none;
-    color: rgba(255, 100, 100, 0.85);
-    font-size: 1rem;
+    color: red;
+    font-size: 1.2rem;
     cursor: pointer;
-    padding: 2px;
-    line-height: 1;
-    transition: color 0.15s ease;
 }
 
 .delete-btn:hover {
-    color: #ff3333;
+    color: darkred;
 }
 
-/* ── Back button ── */
-.back {
-    position: fixed;
-    left: 16px;
-    top: 12px;
-    background: rgba(65, 65, 65, 0.88);
-    color: white;
-    text-align: center;
-    padding: 8px 14px;
-    border-radius: 10px;
-    cursor: pointer;
-    border: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: background-color 0.2s ease;
-    z-index: 10;
-}
 
-.back:hover {
-    background: rgb(28, 28, 28);
-}
-
-/* ── Mobile ── */
-@media (max-width: 640px) {
-    body {
-        padding: 58px 10px 28px;
-    }
-
-    #main-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 1.25rem;
-    }
-
-    .reviews-container,
-    .saved-container {
-        width: 100%;
-        max-width: 100%;
-        min-width: unset;
-    }
-
-    .poster {
-        max-width: 100px;
-    }
-}

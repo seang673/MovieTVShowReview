@@ -1,172 +1,87 @@
-*, *::before, *::after {
-    box-sizing: border-box;
+html, body{
+    height:80%;
+    margin:0;
 }
 
-html, body {
-    min-height: 100%;
-    margin: 0;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 3rem 1rem 2rem;
-    font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(to bottom, #007BFF, #00FFFF, #E4F3E3);
+body{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(to bottom, #007BFF ,#00FFFF ,#E4F3E3);
     background-size: 200% 200%;
-    background-attachment: fixed;
+    background-attachment:fixed;
     animation: scrollGradient 8s ease infinite;
 }
 
-@keyframes scrollGradient {
-    0%   { background-position: 0% 0%; }
-    50%  { background-position: 100% 100%; }
+@keyframes scrollGradient{
+    0% { background-position: 0% 0%;}
+    50% { background-position: 100% 100%; }
     100% { background-position: 0% 0%; }
 }
 
-/* ── Landing ── */
-.auth-container {
-    display: flex;
+.auth-container{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding:20px;
+}
+
+.signup-container, .login-container{
+    display:flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.25rem;
-    padding: 2.5rem 3rem;
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(8px);
-    border-radius: 18px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    gap: 2rem;
+    padding:20px;
 }
 
-/* ── Auth forms ── */
-.signup-container,
-.login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.9rem;
-    padding: 2.5rem 2.75rem;
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(8px);
-    border-radius: 18px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-    min-width: 300px;
+.email {
+    padding:10px;
 }
-
-h2 {
-    color: white;
-    text-align: center;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-size: 1.5rem;
-    margin: 0 0 0.5rem;
+.usern{
+    padding:10px;
 }
-
-label {
-    color: rgba(255, 255, 255, 0.92);
-    font-weight: 600;
-    font-size: 0.875rem;
-    display: block;
-    margin-bottom: 3px;
+.passw{
+    padding:10px;
 }
-
-.email,
-.usern,
-.passw {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    width: 100%;
-    padding: 0;
+.subButton{
+    justify-content:center;
 }
-
-.email input,
-.usern input,
-.passw input {
-    font-size: 16px;
-    padding: 10px 12px;
-    width: 100%;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.88);
-    color: #222;
-    outline: none;
-    transition: border-color 0.2s ease, background 0.2s ease;
+.btn{
+    background:rgb(101, 100, 100);
+    color:white;
+    padding:10px 12px;
+    border-radius:9px;
+    text-align:center;
+    cursor:pointer;
+    width:185px;
+    transition:background-color 0.1s ease;
 }
-
-.email input:focus,
-.usern input:focus,
-.passw input:focus {
-    border-color: #005fc7;
-    background: white;
+.btn:hover{
+    background-color:rgb(56, 55, 55);
 }
 
 .subButton {
-    display: flex;
+    display:flex;
     justify-content: center;
-    margin-top: 0.4rem;
 }
 
-.btn {
-    background: rgb(55, 54, 54);
-    color: white;
-    padding: 11px 20px;
-    border-radius: 9px;
-    text-align: center;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-    font-weight: 600;
-    border: none;
-    transition: background-color 0.15s ease;
+.back{
+    position:absolute;
+    left: 20px;
+    width:75px;
+    top:10px;
+    background:rgb(90, 90, 90);
+    color:white;
+    text-align:center;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor:pointer;
+    transition: background-color 0.3s ease-in-out;
 }
 
-.btn:hover {
-    background-color: rgb(25, 24, 24);
-}
-
-.back {
-    position: absolute;
-    left: 16px;
-    top: 12px;
-    background: rgba(75, 75, 75, 0.88);
-    color: white;
-    text-align: center;
-    padding: 8px 14px;
-    border-radius: 10px;
-    cursor: pointer;
-    border: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: background-color 0.2s ease;
-}
-
-.back:hover {
-    background: rgb(30, 30, 30);
-}
-
-.login-link,
-.signup-link {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 0.875rem;
-    margin: 0.2rem 0 0;
-}
-
-.login-link a,
-.signup-link a {
-    color: white;
-    font-weight: 700;
-    text-decoration: underline;
-}
-
-@media (max-width: 480px) {
-    .login-container,
-    .signup-container,
-    .auth-container {
-        width: 95%;
-        min-width: unset;
-        padding: 1.75rem 1.25rem;
-    }
+.back:hover{
+    background:rgb(43, 43, 43)
 }
