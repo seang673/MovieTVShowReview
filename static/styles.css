@@ -10,6 +10,7 @@ body {
     align-items: center;
     min-height: 100vh;
     padding: 24px;
+    overflow-x: hidden;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     color: #1f2937;
     background: linear-gradient(135deg, #0f4c81 0%, #1a73e8 40%, #4dd0e1 100%);
@@ -38,8 +39,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    width: min(100%, 420px);
-    padding: 32px 28px;
+    width: min(100%, 440px);
+    padding: 32px 28px 24px;
     border-radius: 24px;
     background: rgba(255, 255, 255, 0.96);
     box-shadow: 0 20px 45px rgba(15, 76, 129, 0.2);
@@ -57,6 +58,7 @@ form {
     display: flex;
     flex-direction: column;
     gap: 14px;
+    width: 100%;
 }
 
 .email,
@@ -65,6 +67,7 @@ form {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
 }
 
 label {
@@ -80,7 +83,13 @@ input {
     border: 1px solid #cbd5e1;
     border-radius: 12px;
     font-size: 1rem;
+    color: #0f172a;
+    background-color: #fff;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input::placeholder {
+    color: #94a3b8;
 }
 
 input:focus {
@@ -92,7 +101,7 @@ input:focus {
 .subButton {
     display: flex;
     justify-content: center;
-    margin-top: 6px;
+    margin-top: 4px;
 }
 
 .btn {
@@ -155,18 +164,24 @@ input:focus {
     text-decoration: underline;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
     body {
-        padding: 16px;
+        padding: 12px;
     }
 
     .signup-container, .login-container {
-        padding: 24px 18px;
+        width: 100%;
+        padding: 20px 16px 16px;
+        border-radius: 18px;
     }
 
     .back {
         position: static;
         align-self: flex-start;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        padding: 12px 14px;
     }
 }
