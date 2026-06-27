@@ -86,10 +86,11 @@ function displayResults(movies, tvShows){
                 );
         tvList.appendChild(showCard);
         });
-    }
+
     if (!movies.length && !tvShows.length) {
         resultsDiv.innerHTML = "<p>No results found.</p>";
     }
+}
 
 async function openModal(mediaId, mediaTitle, mediaType){
     const apiKey = "462908883a54600a4f35c65fdb0475cc";
