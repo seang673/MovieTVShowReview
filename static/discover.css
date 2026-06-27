@@ -190,6 +190,7 @@ button:hover{
 
 .rating {
     display: flex;
+    justify-content: center;
     gap: 6px;
     padding-bottom: 6px;
 }
