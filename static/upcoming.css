@@ -1,108 +1,166 @@
-body{
-    font-family: Arial, sans-serif;
-    text-align:center;
-    background-color:rgb(120, 175, 243);
-    color: white;
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
-#mediaContainer{
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    background-color: rgb(96, 158, 232);
+    color: white;
+    min-height: 100vh;
+    padding: 60px 16px 40px;
+}
+
+.upcoming-container h1 {
+    font-size: 1.65rem;
+    margin: 0 0 1.5rem;
+}
+
+/* ── Cards grid ── */
+#mediaContainer {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap:30px;
-
+    gap: 20px;
 }
 
-.media-card{
-    width:300px;
-    margin:20px;
-    padding:15px;
-    background-color: #333;
-    border-radius: 9px;
-    cursor:pointer;
+.media-card {
+    width: clamp(200px, 28vw, 270px);
+    padding: 14px;
+    background-color: #2e2e2e;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-.media-card img{
-    width: 92%;
-    border-radius:11px;
+.media-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.38);
 }
 
-.modal{
+.media-card img {
+    width: 100%;
+    border-radius: 8px;
+    display: block;
+}
+
+.media-card h2 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin: 10px 0 0;
+    line-height: 1.35;
+    color: white;
+}
+
+/* ── Modal ── */
+.modal {
     display: none;
     position: fixed;
-    left:50%;
-    top:50%;
-    width:400px;
+    left: 50%;
+    top: 50%;
+    width: 420px;
+    max-width: 92vw;
     transform: translate(-50%, -50%);
-    height: auto;
-    padding: 20px;
-    background-color:rgb(121, 138, 195);
-    border-radius: 10px;
-}
-
-.close{
-    position: absolute;
-    right: 8px;
-    top:8px;
-    font-size: 25px;
-    text-align:center;
-    cursor: pointer;
-    background:red;
-    color:white;
-    width:23px;
-    height:23px;
-    border-radius:5px;
-}
-
-.btn{
-    padding:10px 12px;
-    background:gray;
-    color:white;
-    border-radius:12px;
-    cursor:pointer;
-    transition: all 0.1s ease-in-out;
-}
-
-.btn:hover{
-    background-color:rgb(53,52,52);
-}
-
-.back{
-    position:absolute;
-    left: 20px;
-    width:75px;
-    top:10px;
-    background:rgb(90, 90, 90);
-    color:white;
-    text-align:center;
-    padding: 10px 12px;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 24px 22px 22px;
+    background-color: rgb(100, 118, 180);
     border-radius: 12px;
-    cursor:pointer;
-    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.42);
+    text-align: left;
 }
 
-@media screen and (max-width: 750px){
-    
-    .upcoming-container{
-        margin: 45px auto 0;
-        width: 90%;
+.modal-content {
+    position: relative;
+}
+
+.modal h2 {
+    font-size: 1.2rem;
+    margin: 0 0 0.75rem;
+    padding-right: 30px;
+    line-height: 1.3;
+    color: white;
+}
+
+.modal p {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin: 0.35rem 0;
+}
+
+.modal iframe {
+    width: 100%;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 22px;
+    text-align: center;
+    line-height: 26px;
+    cursor: pointer;
+    background: #c62828;
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 18px;
+    background: rgb(65, 62, 62);
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    font-size: 0.95rem;
+    margin-top: 14px;
+    transition: background-color 0.15s ease;
+}
+
+.btn:hover {
+    background-color: rgb(32, 30, 30);
+}
+
+/* ── Back button ── */
+.back {
+    position: fixed;
+    left: 16px;
+    top: 12px;
+    background: rgba(65, 65, 65, 0.88);
+    color: white;
+    text-align: center;
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    z-index: 10;
+}
+
+.back:hover {
+    background: rgb(28, 28, 28);
+}
+
+/* ── Mobile ── */
+@media screen and (max-width: 600px) {
+    body {
+        padding-top: 60px;
     }
 
-    .modal{
-        display: none;
-        position: fixed;
-        left:50%;
-        top:50%;
-        width:400px;
-        max-width:90%;
-        box-sizing:border-box;
-        transform: translate(-50%, -50%);
-        height: auto;
-        max-height:90vh;
-        overflow-y:auto;
-        padding: 20px;
-        background-color:rgb(121, 138, 195);
-        border-radius: 10px;
+    .media-card {
+        width: calc(100vw - 40px);
+        max-width: 340px;
     }
 
+    #mediaContainer {
+        gap: 12px;
+    }
 }
